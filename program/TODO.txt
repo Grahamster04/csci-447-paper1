@@ -1,0 +1,3 @@
+09/07
+Our goal is to make it so that we can take in any file, create a corresponding arraylist of the objects of that particular dataset, and then then split it into a training model and testing model.
+We can also probably try to get started on our null predictor since that would be kind of trivial.
