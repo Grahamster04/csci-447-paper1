@@ -1,0 +1,22 @@
+Abalonne: 
+	Sex / Length / Diameter / Height / Whole weight / Shucked weight / Viscera weight / Shell weight / Rings
+	Char / Float / Float / Float / Float / Float / Float / Int (9 entries)
+
+Breast Cancer:
+	Sample code # / Clump thickness / Uniformity of Cell Size / Uniformity of Cell Shape / Marginal Adhesion / Single Epithelial Cell Size / Bare Nuclei / Bland Chromatin / Normal Nucleoli / Mitoses / Class (11 entries)
+	Int (id) / Int (1-10) / Int (1-10) / Int (1-10) / Int (1-10) / Int (1-10) / Int (1-10) / Int (1-10) / Int (1-10) / Int (1-10) / Int (2 benign, 4 malignant)
+
+Car:
+	buying / maint / doors / persons / lug_boot / safety (6 entries)
+	String / String / String / String / String / String
+Forest Fires:
+	X / Y / month / day / FFMC / DMC / DC / ISI / temp / RH / wind / rain / area (13 entries)
+	Int / Int / String / String / Float / Float / Float / Float / Float / Float / Float / Float / Float
+House Votes:
+	Class name / handicapped-infants / water-project-cost-sharing / adoption-of-the-budget-resolution / physician-fee-freeze / el-salvador-aid / religious-groups-in-schools / anti-satellite-test-ban / aid-to-nicaraguan-contras / mx-missile / immigration / synfuels-corporation-cutback / education-spending / superfund-right-to-sue / crime / duty-free-exports / export-administration-act-south-africa (17 entries)
+	All are booleans (first is Dem/Rep then rest are Yes/No, may need to boolify strings)
+Machine:
+	Vendor name / Model name / MYCT / MMIN / MMAX / CACH / CHMIN / CHMAX / PRP / ERP (10 entries)
+	String / Char / Int / Int / Int / Int / Int / Int / Int / Int / Int / Int
+
+
