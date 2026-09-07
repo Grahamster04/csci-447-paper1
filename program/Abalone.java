@@ -1,5 +1,5 @@
-Public class Abalone {
-// "Overview: The data describes the physical measurements of abalone and the associated age.
+public class Abalone {
+  // "Overview: The data describes the physical measurements of abalone and the associated age.
 // Predictor: Rings (int)
 // Source: Marine Research Laboratories, Tasmania, 1995
 // URL: https://archive.ics.uci.edu/ml/datasets/Abalone
@@ -16,15 +16,16 @@ Public class Abalone {
   public float visceraWeight;
   public float shellWeight;
   public int rings;
-  Abalone(char s, float l, float d, float h, float wW, float sW, float vW, float sW, int r) {
+
+  Abalone(char s, float l, float d, float h, float wW, float suW, float vW, float seW, int r) {
     this.sex = s;
     this.length = l;
     this.diameter = d;
     this.height = h;
     this.wholeWeight = wW;
-    this.shuckedWeight = sW;
+    this.shuckedWeight = suW;
     this.visceraWeight = vW;
-    this.shellWeight = sW;
+    this.shellWeight = seW;
     this.rings = r;
   }
 }
