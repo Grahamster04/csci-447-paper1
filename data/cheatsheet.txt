@@ -14,7 +14,7 @@ Forest Fires:
 	Int / Int / String / String / Float / Float / Float / Float / Float / Float / Float / Float / Float
 House Votes:
 	Class name / handicapped-infants / water-project-cost-sharing / adoption-of-the-budget-resolution / physician-fee-freeze / el-salvador-aid / religious-groups-in-schools / anti-satellite-test-ban / aid-to-nicaraguan-contras / mx-missile / immigration / synfuels-corporation-cutback / education-spending / superfund-right-to-sue / crime / duty-free-exports / export-administration-act-south-africa (17 entries)
-	All are booleans (first is Dem/Rep then rest are Yes/No, may need to boolify strings)
+	All are booleans (first is Dem/Rep then rest are Yes/No, may need to boolify strings. Since ? can mean abstain, maybe have that be stored as null so we can keep using bools for efficiency sake?)
 Machine:
 	Vendor name / Model name / MYCT / MMIN / MMAX / CACH / CHMIN / CHMAX / PRP / ERP (10 entries)
 	String / Char / Int / Int / Int / Int / Int / Int / Int / Int / Int / Int
