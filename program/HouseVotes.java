@@ -86,8 +86,11 @@ public class HouseVotes{
     }
   }
 
-  @Override
-  public String toString() {
-    return super.toString();
+    @Override
+    public String toString() {
+      return party + "," + handicapped_infants + "," + budget + "," + fee_freeze + "," + el_salvador + "," +
+              religion + "," + satellite + "," + nicaragua + "," + missile + "," + immigration + "," + cutback +
+              "," + education + "," + right_to_sue + "," + crime + "," + export + "," + south_africa;
+    }
   }
-}
+
