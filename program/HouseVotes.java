@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class HouseVotes{
   // Overview: This data set includes votes for each of the U.S. House of Representatives Congressmen
   // on the 16 key votes identified by the Congressional Quarterly Almanac.
@@ -6,7 +11,9 @@ public class HouseVotes{
   // URL: https://archive.ics.uci.edu/ml/datasets/Congressional+Voting+Records
   // Notes: Be careful with this data set since “?” does not indicate a missing attribute value. It actually
   // means “abstain.” This is a two-class problem.
-  
+
+  static ArrayList<HouseVotes> votes = new ArrayList<>();
+
   public String party;
   public char handicapped_infants;
   public char water_sharing;
@@ -32,16 +39,55 @@ public class HouseVotes{
     this.budget = b;
     this.fee_freeze = ff;
     this.el_salvador = es;
-    this.religion; = r;
+    this.religion = r;
     this.satellite = s;
     this.nicaragua = n;
-    this.misisle = m;
+    this.missile = m;
     this.immigration = i;
     this.cutback = cut;
     this.education = e;
-    this.rgith_to_sue = rts;
+    this.right_to_sue = rts;
     this.crime = crim;
     this.export = ex;
     this.south_africa = sa;
+  }
+
+  public static void collectData() {
+    try (BufferedReader br = new BufferedReader(new FileReader("data/house-votes-84.data"))) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        String[] split = line.split(",");
+        HouseVotes temp = new HouseVotes(
+                split[0],
+                split[1].charAt(0),
+                split[2].charAt(0),
+                split[3].charAt(0),
+                split[4].charAt(0),
+                split[5].charAt(0),
+                split[6].charAt(0),
+                split[7].charAt(0),
+                split[8].charAt(0),
+                split[9].charAt(0),
+                split[10].charAt(0),
+                split[11].charAt(0),
+                split[12].charAt(0),
+                split[13].charAt(0),
+                split[14].charAt(0),
+                split[15].charAt(0),
+                split[16].charAt(0));
+        votes.add(temp);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    for (HouseVotes data : votes) {
+      System.out.println(data);
+    }
+  }
+
+  @Override
+  public String toString() {
+    return super.toString();
   }
 }

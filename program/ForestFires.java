@@ -25,14 +25,14 @@ public class ForestFires {
   public float rain;
   public float area;
 
-  ForestFires(int x, int y, String m, String d, float f, float dm, float d, float i, float t, float r, float w, float ra, float ar) {
+  ForestFires(int x, int y, String m, String d, float f, float dm, float dc, float i, float t, float r, float w, float ra, float ar) {
     this.xCor = x;
     this.yCor = y;
     this.month = m;
     this.day = d;
     this.ffmc = f;
     this.dmc = dm;
-    this.dc = d;
+    this.dc = dc;
     this.isi = i;
     this.temp = t;
     this.rh = r;
