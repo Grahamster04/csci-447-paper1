@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class HouseVotes{
@@ -52,7 +53,7 @@ public class HouseVotes{
     this.south_africa = sa;
   }
 
-  public static void collectData() {
+  public static ArrayList<HouseVotes> collectData() {
     try (BufferedReader br = new BufferedReader(new FileReader("data/house-votes-84.data"))) {
       String line;
       while ((line = br.readLine()) != null) {
@@ -81,8 +82,25 @@ public class HouseVotes{
       e.printStackTrace();
     }
 
-    for (HouseVotes data : votes) {
-      System.out.println(data);
+    return votes;
+  }
+
+  public static void voterNull() {
+    int d = 0;
+    int r = 0;
+    for (HouseVotes entry : votes) {
+      if (entry.party.equals("democrat")) {
+        d++;
+      } else {
+        r++;
+      }
+    }
+
+    System.out.println("Democrat: " + d + "\nRepublican: " + r);
+    if (r > d) {
+      System.out.println("republican");
+    } else {
+      System.out.println("democrat");
     }
   }
 
@@ -92,5 +110,5 @@ public class HouseVotes{
               religion + "," + satellite + "," + nicaragua + "," + missile + "," + immigration + "," + cutback +
               "," + education + "," + right_to_sue + "," + crime + "," + export + "," + south_africa;
     }
-  }
+}
 
