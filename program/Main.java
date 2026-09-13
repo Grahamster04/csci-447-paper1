@@ -1,10 +1,55 @@
+public class Main{
+    public static final String FILE_NAME = "data/abalone.data";
+
+    public static final String abalone = "data/abalone.data";
+    public static final String breastCancer = "data/breast-cancer-wisconsin.data";
+    public static final String car = "data/car.data";
+    public static final String fires = "data/forestfires.data";
+    public static final String houseVotes = "data/house-votes-84.data";
+    public static final String machine = "data/machine.data";
+
+    public static boolean classification;
+    public static int numAtributes;
 
 
-public static void main(String[] args) {
+    public static void main(String[] args) {
+        //READ FILE FROM FILE NAME
+        if (FILE_NAME == abalone){
+            System.out.println("FILE ABALONE");
+            classification = false;
+            numAtributes = 9;
+            Abalone.collectData();
+
+        }
+        if (FILE_NAME == breastCancer){
+            System.out.println("FILE BREST CANCER");
+            classification = true;
+            numAtributes = 11;
+        }
+        if (FILE_NAME == car){
+            System.out.println("FILE CAR");
+            classification = true;
+            numAtributes = 6;
+        }
+        if (FILE_NAME == fires){
+            System.out.println("FILE FOREST FIRES");
+            classification = false;
+            numAtributes = 13;
+        }
+        if (FILE_NAME == houseVotes){
+            System.out.println("FILE HOUSE VOTES");
+            classification = true;
+            numAtributes = 17;
+        }
+        if (FILE_NAME == machine){
+            System.out.println("FILE MACHINE");
+            classification = false;
+            numAtributes = 10;
+        }
 
   // NULL MODELS
     // Classification: Return the most common data value
-    HouseVotes.collectData();
+    //HouseVotes.collectData();
 
 
     // Regression: Determine the average of each predictor class and return said average
@@ -20,4 +65,5 @@ public static void main(String[] args) {
   // Class Determinations
     // Classification (plurality vote)
     // Regression (Gaussian kernal)
+    }
 }
