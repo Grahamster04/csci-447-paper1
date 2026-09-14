@@ -128,8 +128,8 @@ public class Abalone implements normalizedFeatures{
   }
 
   @Override
-  public String getLable() {
-    return String.valueOf(rings);
+  public double getLable() {
+    return rings;
   }
   public String toString() {
     return sex + "," + length + "," + diameter + "," + height + "," + wholeWeight + "," +
