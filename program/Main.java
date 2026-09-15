@@ -53,7 +53,7 @@ public class Main{
             numAtributes = 10;
         }
 
-        // NULL MODELS
+        // NULL MODELS (Implemented in if statements above. Change if you want)
         // Classification: Return the most common data value
         // Regression: Determine the average of each predictor class and return said average
 
