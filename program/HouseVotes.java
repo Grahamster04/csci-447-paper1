@@ -85,7 +85,7 @@ public class HouseVotes{
     return votes;
   }
 
-  public void classify() {
+  public static void classify() {
     int d = 0;
     int r = 0;
     for (HouseVotes entry : votes) {

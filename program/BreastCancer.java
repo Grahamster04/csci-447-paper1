@@ -67,10 +67,6 @@ public class BreastCancer {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    for (BreastCancer entry : data) {
-      System.out.println(entry);
-    }
     return data;
   }
 
