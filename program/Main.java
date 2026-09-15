@@ -1,5 +1,5 @@
 public class Main{
-    public static final String FILE_NAME = "data/car.data";
+    public static final String FILE_NAME = "data/machine.data";
 
     public static final String abalone = "data/abalone.data";
     public static final String breastCancer = "data/breast-cancer-wisconsin.data";
@@ -39,6 +39,8 @@ public class Main{
             System.out.println("FILE FOREST FIRES");
             classification = false;
             numAtributes = 13;
+            ForestFires.collectData();
+            ForestFires.classify();
         }
         if (FILE_NAME == houseVotes){
             System.out.println("FILE HOUSE VOTES");
@@ -51,6 +53,8 @@ public class Main{
             System.out.println("FILE MACHINE");
             classification = false;
             numAtributes = 10;
+            Machine.collectData();
+            Machine.classify();
         }
 
         // NULL MODELS
