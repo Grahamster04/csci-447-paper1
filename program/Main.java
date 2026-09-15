@@ -1,5 +1,5 @@
 public class Main{
-    public static final String FILE_NAME = "data/abalone.data";
+    public static final String FILE_NAME = "data/car.data";
 
     public static final String abalone = "data/abalone.data";
     public static final String breastCancer = "data/breast-cancer-wisconsin.data";
@@ -14,22 +14,26 @@ public class Main{
 
     public static void main(String[] args) {
         //READ FILE FROM FILE NAME
-        if (FILE_NAME == abalone){
+        if (FILE_NAME.equals(abalone)){
             System.out.println("FILE ABALONE");
             classification = false;
             numAtributes = 9;
-            Abalone.collectData();
+            // Abalone.collectData();
 
         }
-        if (FILE_NAME == breastCancer){
-            System.out.println("FILE BREST CANCER");
+        if (FILE_NAME.equals(breastCancer)){
+            System.out.println("FILE BREAST CANCER");
             classification = true;
             numAtributes = 11;
+            BreastCancer.collectData();
+            BreastCancer.classify();
         }
-        if (FILE_NAME == car){
+        if (FILE_NAME.equals(car)){
             System.out.println("FILE CAR");
             classification = true;
             numAtributes = 6;
+            Car.collectData();
+            Car.classify();
         }
         if (FILE_NAME == fires){
             System.out.println("FILE FOREST FIRES");
@@ -40,6 +44,8 @@ public class Main{
             System.out.println("FILE HOUSE VOTES");
             classification = true;
             numAtributes = 17;
+            HouseVotes.collectData();
+            HouseVotes.classify();
         }
         if (FILE_NAME == machine){
             System.out.println("FILE MACHINE");
@@ -47,23 +53,20 @@ public class Main{
             numAtributes = 10;
         }
 
-  // NULL MODELS
-    // Classification: Return the most common data value
-    //HouseVotes.collectData();
+        // NULL MODELS (Implemented in if statements above. Change if you want)
+        // Classification: Return the most common data value
+        // Regression: Determine the average of each predictor class and return said average
 
+        // K-Nearest Neighbor
+        // Classification
+        // Regression
 
-    // Regression: Determine the average of each predictor class and return said average
+        // Edited/Condensed K-Nearest Neighbor
+        // Classification
+        // Regression (including ∈ threshold)
 
-  // K-Nearest Neighbor
-    // Classification
-    // Regression
-
-  // Edited/Condensed K-Nearest Neighbor
-    // Classification
-    // Regression (including ∈ threshold)
-
-  // Class Determinations
-    // Classification (plurality vote)
-    // Regression (Gaussian kernal)
+        // Class Determinations
+        // Classification (plurality vote)
+        // Regression (Gaussian kernal)
     }
 }
