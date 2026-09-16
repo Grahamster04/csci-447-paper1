@@ -13,13 +13,13 @@ public class Abalone implements normalizedFeatures{
 // are real-valued except for sex. You may choose between one-hot coding this feature, or discarding
 // it."
   public char sex;
-  public float length; public static float lengthMax;
-  public float diameter; public static float diameterMax;
-  public float height; public static float heightMax;
-  public float wholeWeight; public static float wholeWeightMax;
-  public float shuckedWeight;  public static float shuckedWeightMax;
-  public float visceraWeight;  public static float visceraWeightMax;
-  public float shellWeight; public static float shellWeightMax;
+  public float length; public static float lengthMax = Float.NEGATIVE_INFINITY; public static float lengthMin = Float.POSITIVE_INFINITY;
+  public float diameter; public static float diameterMax = Float.NEGATIVE_INFINITY; public static float diameterMin = Float.POSITIVE_INFINITY;
+  public float height; public static float heightMax = Float.NEGATIVE_INFINITY; public static float heightMin = Float.POSITIVE_INFINITY;
+  public float wholeWeight; public static float wholeWeightMax = Float.NEGATIVE_INFINITY; public static float wholeWeightMin = Float.POSITIVE_INFINITY;
+  public float shuckedWeight;  public static float shuckedWeightMax = Float.NEGATIVE_INFINITY; public static float shuckedWeightMin =Float.POSITIVE_INFINITY;
+  public float visceraWeight;  public static float visceraWeightMax = Float.NEGATIVE_INFINITY; public static float visceraWeightMin = Float.POSITIVE_INFINITY;
+  public float shellWeight; public static float shellWeightMax = Float.NEGATIVE_INFINITY; public static float shellWeightMin = Float.POSITIVE_INFINITY;
   public int rings;
 
   public static ArrayList<Abalone> data = new ArrayList<>();
@@ -57,13 +57,13 @@ public class Abalone implements normalizedFeatures{
         );
 
         //Used for normalization, gets the highest number of all the catagories
-        if(temp.length > lengthMax){ lengthMax = temp.length;}
-        if(temp.diameter > diameterMax){ diameterMax = temp.diameter;}
-        if(temp.height > heightMax){ heightMax = temp.height;}
-        if(temp.wholeWeight > wholeWeightMax){ wholeWeightMax = temp.wholeWeight;}
-        if(temp.shuckedWeight > shuckedWeightMax){ shuckedWeightMax = temp.shuckedWeight;}
-        if(temp.visceraWeight > visceraWeightMax){ visceraWeightMax = temp.visceraWeight;}
-        if(temp.shellWeight > shellWeightMax){ shellWeightMax = temp.shellWeight;}
+        if(temp.length > lengthMax){ lengthMax = temp.length;}                            if(temp.length < lengthMin){ lengthMin = temp.length;}
+        if(temp.diameter > diameterMax){ diameterMax = temp.diameter;}                    if(temp.diameter < diameterMin){ diameterMin = temp.diameter;}
+        if(temp.height > heightMax){ heightMax = temp.height;}                            if(temp.height < heightMin){ heightMin = temp.height;}
+        if(temp.wholeWeight > wholeWeightMax){ wholeWeightMax = temp.wholeWeight;}        if(temp.wholeWeight < wholeWeightMin){ wholeWeightMin = temp.wholeWeight;}
+        if(temp.shuckedWeight > shuckedWeightMax){ shuckedWeightMax = temp.shuckedWeight;}if(temp.shuckedWeight < shuckedWeightMin){ shuckedWeightMin = temp.shuckedWeight;}
+        if(temp.visceraWeight > visceraWeightMax){ visceraWeightMax = temp.visceraWeight;}if(temp.visceraWeight < visceraWeightMin){ visceraWeightMin = temp.visceraWeight;}
+        if(temp.shellWeight > shellWeightMax){ shellWeightMax = temp.shellWeight;}        if(temp.shellWeight < shellWeightMin){ shellWeightMin = temp.shellWeight;}
 
         data.add(temp);
       }
@@ -71,11 +71,7 @@ public class Abalone implements normalizedFeatures{
       e.printStackTrace();
     }
 
-    for (Abalone data : data) {
-      System.out.println(data);
-    }
-    System.out.println( lengthMax + "," + diameterMax + "," + heightMax + "," + wholeWeightMax + "," +
-            shuckedWeightMax + "," + visceraWeightMax + "," + shellWeightMax);
+
   }
 
   @Override
@@ -93,31 +89,31 @@ public class Abalone implements normalizedFeatures{
   }
 
   private double encodeShellWeight() {
-    return shellWeight/shellWeightMax;
+    return (shellWeight - shellWeightMin)/(shellWeightMax-shellWeightMin);
   }
 
   private double encodeVisceraWeigth() {
-    return visceraWeight/visceraWeightMax;
+    return (visceraWeight -visceraWeightMin)/(visceraWeightMax - visceraWeightMin);
   }
 
   private double encodeShuckedWeight() {
-    return shuckedWeight/shuckedWeightMax;
+    return (shuckedWeight-visceraWeightMin)/(shuckedWeightMax-visceraWeightMin);
   }
 
   private double encodeWholeWeight() {
-    return wholeWeight/ wholeWeightMax;
+    return (wholeWeight-visceraWeightMin)/ (wholeWeightMax-visceraWeightMin);
   }
 
   private double encodeHeight() {
-    return height/heightMax;
+    return (height-heightMin)/(heightMax-heightMin);
   }
 
   private double encodeDiameter() {
-    return diameter/diameterMax;
+    return (diameter-diameterMin)/(diameterMax-diameterMin);
   }
 
   private double encodeLength() {
-    return length/lengthMax;
+    return (length-lengthMin)/(lengthMax-lengthMin);
   }
 
   private double encodeSex() {
@@ -128,8 +124,8 @@ public class Abalone implements normalizedFeatures{
   }
 
   @Override
-  public String getLable() {
-    return String.valueOf(rings);
+  public double getLable() {
+    return rings;
   }
   public String toString() {
     return sex + "," + length + "," + diameter + "," + height + "," + wholeWeight + "," +

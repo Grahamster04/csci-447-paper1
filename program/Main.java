@@ -1,5 +1,15 @@
+import java.util.*;
+
 public class Main{
-    public static final String FILE_NAME = "data/forestfires.data";
+    // CHANGABLE ATRIBUTES Depending
+    //-------------------------------------
+    public static final String FILE_NAME = "data/abalone.data";
+    public static int kIndex = 0;
+    public static int yIndex = 0;
+
+    public static int[] k = {1, 3, 5, 7, 9, 11, 15};
+    public static double[] y = {.01, .1, .5, 1, 2, 5, 10 };
+    //-------------------------------------
 
     public static final String abalone = "data/abalone.data";
     public static final String breastCancer = "data/breast-cancer-wisconsin.data";
@@ -11,6 +21,10 @@ public class Main{
     public static boolean classification;
     public static int numAtributes;
 
+    public static ArrayList<normalizedData> data = new ArrayList<>();
+    public static int splitIndex;
+    public static int lastIndex;
+
 
     public static void main(String[] args) {
         //READ FILE FROM FILE NAME
@@ -18,7 +32,13 @@ public class Main{
             System.out.println("FILE ABALONE");
             classification = false;
             numAtributes = 9;
-            // Abalone.collectData();
+            Abalone.collectData();
+            for (int i = 0; i < Abalone.data.size() - 1; i++) {
+                Abalone point = Abalone.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
+                //System.out.println("Added:" + point + ", new:" + data.getLast());
+            }
+
 
         }
         if (FILE_NAME.equals(breastCancer)){
@@ -35,21 +55,21 @@ public class Main{
             Car.collectData();
             Car.classify();
         }
-        if (FILE_NAME == fires){
+        if (FILE_NAME == fires) {
             System.out.println("FILE FOREST FIRES");
             classification = false;
             numAtributes = 13;
             ForestFires.collectData();
             ForestFires.classify();
         }
-        if (FILE_NAME == houseVotes){
+        if (FILE_NAME == houseVotes) {
             System.out.println("FILE HOUSE VOTES");
             classification = true;
             numAtributes = 17;
             HouseVotes.collectData();
             HouseVotes.classify();
         }
-        if (FILE_NAME == machine){
+        if (FILE_NAME == machine) {
             System.out.println("FILE MACHINE");
             classification = false;
             numAtributes = 10;
@@ -57,20 +77,202 @@ public class Main{
             Machine.classify();
         }
 
-        // NULL MODELS (Implemented in if statements above. Change if you want)
+
+        //FOR ALL OF THE FILES
+
+        //RANDOMIZE DATA SET
+        Collections.shuffle(data);
+        splitIndex = (data.size() - 1) / 2;
+        lastIndex = data.size() - 1;
+
+        // NULL MODELS
         // Classification: Return the most common data value
+        //HouseVotes.collectData();
+
+
         // Regression: Determine the average of each predictor class and return said average
 
         // K-Nearest Neighbor
         // Classification
         // Regression
 
-        // Edited/Condensed K-Nearest Neighbor
-        // Classification
-        // Regression (including ∈ threshold)
+        //---------------------------------
+        //Edited condensed nearest neigbor
+        //---------------------------------
+        ArrayList<normalizedData> newData = new ArrayList<>(data);
 
-        // Class Determinations
-        // Classification (plurality vote)
-        // Regression (Gaussian kernal)
+        for(normalizedData point : newData){
+
+        }
+
+
+
+        //-------------------------------------------------------------------------------------------
+        //K NEAREST NEIGHBOR WITH NEW STRUCTURE FULL OF NORMALIZED DATA
+        // ------------------------------------------------------------------------------------------
+
+
+
+        //loops throught different k values
+        while (kIndex < k.length){
+            while(yIndex < y.length) {
+
+                //regression variable
+                double squaredErrorSum = 0;
+
+                //clasification variable
+                int guessCorrect = 0;
+
+                //both
+                int pointsSurveyed = 0;
+
+                //LOOP EVERY POINT, loops through every data point in the testing set, and tests it against the
+                for (int currentIndex = splitIndex + 1; currentIndex < lastIndex; currentIndex++) {
+                    normalizedData[] nearestPoints = new normalizedData[k[kIndex]];
+                    double[] nearestDistances = new double[k[kIndex]];
+                    Arrays.fill(nearestDistances, Double.POSITIVE_INFINITY);
+
+                    normalizedData measurePoint = data.get(currentIndex);
+                    normalizedData tempPoint;
+
+                    for (int i = 0; i < splitIndex; i++) {
+                        tempPoint = data.get(i);
+                        double distance = euclideanDistance(measurePoint.getFeatures(), tempPoint.getFeatures());
+
+
+                        int largestIndex = 0;
+
+                        for (int j = 1; j < k[kIndex]; j++) {
+                            if (nearestDistances[j] > nearestDistances[largestIndex]) {
+                                largestIndex = j;
+                            }
+                        }
+                        if (nearestDistances[largestIndex] > distance) {
+                            nearestPoints[largestIndex] = tempPoint;
+                            nearestDistances[largestIndex] = distance;
+                        }
+
+                    }
+                    //System.out.println("Point picked: " + measurePoint);
+                    //System.out.println("Nearests:");
+                    for (int i = 0; i < k[kIndex]; i++) {
+                        //System.out.println("Distance: " + nearestDistances[i] + ", Params: " + nearestPoints[i]);
+                    }
+                    double guess;
+                    if (classification) {
+                        guess = makeGuessClassification(nearestPoints);
+                        //possibly convert guess back to its catagorical right here?
+                        if (guess == data.get(currentIndex).getTarget()) {
+                            guessCorrect++;
+                        }
+                    } else {
+                        guess = makeGuessRegression(nearestDistances, nearestPoints);
+                        //System.out.println("Our Guess: " + guess);
+                        //System.out.println("Real Value: " + measurePoint.getTarget());
+                        squaredErrorSum += Math.pow(measurePoint.getTarget() - guess, 2);
+                    }
+                    pointsSurveyed++;
+
+                }
+                System.out.println("K: " + k[kIndex] + ", Y: " + y[yIndex]);
+                if (classification) {
+                    System.out.println("Percent correct: " + (guessCorrect / pointsSurveyed));
+                } else {
+                    System.out.println("Mean squared error: " + (squaredErrorSum / pointsSurveyed));
+                }
+                //System.out.println("Points surveyed: " + pointsSurveyed);
+
+                yIndex++;
+            }
+            yIndex = 0;
+            kIndex++;
+        }
+        //---------------------------------------------------------
+        // END K NEAREST
+        //---------------------------------------------------------
+
+
+  // Edited/Condensed K-Nearest Neighbor
+    // Classification
+    // Regression (including ∈ threshold)
+
+  // Class Determinations
+    // Classification (plurality vote)
+    // Regression (Gaussian kernal)
+    }
+
+
+
+
+
+
+
+
+    private static double makeGuessRegression( double[] distances, normalizedData[] points) {
+        double[] weights = new double[k[kIndex]];
+        double[] weightedOutputs = new double[k[kIndex]];
+        for(int i = 0; i<k[kIndex]; i++){
+            weights[i] = Math.exp(-y[yIndex]*(distances[i]*distances[i]));
+            weightedOutputs[i] = points[i].getTarget()*weights[i];
+        }
+
+        double totalWeights = 0;
+        double totalWeightedOutputs = 0;
+        for (int i = 0; i<k[kIndex]; i++){
+            totalWeights += weights[i];
+            totalWeightedOutputs += weightedOutputs[i];
+        }
+        double guess = totalWeightedOutputs/totalWeights;
+        return guess;
+
+    }
+
+    private static double makeGuessClassification( normalizedData[] points) {
+        //TO DO
+        double[] outputs = new double[k[kIndex]];
+        for (int i = 0; i<k[kIndex]; i++){
+            outputs[i] = points[i].getTarget();
+        }
+        Map<Double, Integer> freqMap = new HashMap<>();
+        int maxCount = 0;
+        double mostCommonElement = outputs[0];
+        for(int i = 0; i<k[kIndex]; i++){
+            int count = freqMap.getOrDefault(outputs[i], 0) + 1;
+            freqMap.put(outputs[i], count);
+
+            if (count > maxCount){
+                mostCommonElement = outputs[i];
+            }
+            if (count == maxCount){
+                Random random = new Random();
+                int randomNumber = random.nextInt(1, 3);
+                if (randomNumber == 1){
+                    mostCommonElement = outputs[i];
+                }
+            }
+        }
+
+
+               //Tally up the most common output, and return that value as a double
+        return 0;
+    }
+
+
+    public static double euclideanDistance(double[] firstPoint, double[] secondPoint) {
+
+        if (firstPoint.length != secondPoint.length) {
+            throw new IllegalArgumentException(
+                    "Points must have the same number of features."
+            );
+        }
+
+        double squaredDistance = 0;
+
+        for (int i = 0; i < firstPoint.length; i++) {
+            double difference = firstPoint[i] - secondPoint[i];
+            squaredDistance += difference * difference;
+        }
+
+        return Math.sqrt(squaredDistance);
     }
 }
