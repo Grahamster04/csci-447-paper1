@@ -25,7 +25,7 @@ public class Main{
 
     public static void main(String[] args) {
         //READ FILE FROM FILE NAME
-        if (FILE_NAME == abalone) {
+        if (FILE_NAME.equals(abalone)){
             System.out.println("FILE ABALONE");
             classification = false;
             numAtributes = 9;
@@ -39,30 +39,40 @@ public class Main{
             lastIndex = data.size() - 1;
 
         }
-        if (FILE_NAME == breastCancer) {
-            System.out.println("FILE BREST CANCER");
+        if (FILE_NAME.equals(breastCancer)){
+            System.out.println("FILE BREAST CANCER");
             classification = true;
             numAtributes = 11;
+            BreastCancer.collectData();
+            BreastCancer.classify();
         }
-        if (FILE_NAME == car) {
+        if (FILE_NAME.equals(car)){
             System.out.println("FILE CAR");
             classification = true;
             numAtributes = 6;
+            Car.collectData();
+            Car.classify();
         }
         if (FILE_NAME == fires) {
             System.out.println("FILE FOREST FIRES");
             classification = false;
             numAtributes = 13;
+            ForestFires.collectData();
+            ForestFires.classify();
         }
         if (FILE_NAME == houseVotes) {
             System.out.println("FILE HOUSE VOTES");
             classification = true;
             numAtributes = 17;
+            HouseVotes.collectData();
+            HouseVotes.classify();
         }
         if (FILE_NAME == machine) {
             System.out.println("FILE MACHINE");
             classification = false;
             numAtributes = 10;
+            Machine.collectData();
+            Machine.classify();
         }
 
         // NULL MODELS
@@ -123,13 +133,13 @@ public class Main{
 
 
 
-        // Edited/Condensed K-Nearest Neighbor
-        // Classification
-        // Regression (including ∈ threshold)
+  // Edited/Condensed K-Nearest Neighbor
+    // Classification
+    // Regression (including ∈ threshold)
 
-        // Class Determinations
-        // Classification (plurality vote)
-        // Regression (Gaussian kernal)
+  // Class Determinations
+    // Classification (plurality vote)
+    // Regression (Gaussian kernal)
     }
 
     private static double makeGuessRegression( double[] distances, normalizedData[] points) {
