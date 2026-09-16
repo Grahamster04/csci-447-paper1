@@ -43,7 +43,7 @@ public class Machine {
                         Integer.parseInt(split[9].trim())
                 );
 
-                // Normalization tracking
+                // Normalization for machine
                 if (temp.MYCT > MYCTMax) { MYCTMax = temp.MYCT; }
                 if (temp.MMIN > MMINMax) { MMINMax = temp.MMIN; }
                 if (temp.MMAX > MMAXMax) { MMAXMax = temp.MMAX; }

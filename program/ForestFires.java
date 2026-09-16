@@ -70,7 +70,7 @@ public class ForestFires {
                 Float.parseFloat(split[11]),
                 Float.parseFloat(split[12]));
 
-        // Normalization tracking
+        // Normalization for forest fires
         if (temp.xCor > xCorMax) { xCorMax = temp.xCor; }
         if (temp.yCor > yCorMax) { yCorMax = temp.yCor; }
         if (temp.ffmc > ffmcMax) { ffmcMax = temp.ffmc; }
