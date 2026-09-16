@@ -15,7 +15,7 @@ public class BreastCancer implements normalizedFeatures {
 // values may be imputed, or the examples with missing features may be dropped from the data
 // set."
 
-  static ArrayList<BreastCancer> data = new ArrayList<>();
+  public static ArrayList<BreastCancer> data = new ArrayList<>();
 
   public int sampleCode; public static int sampleCodeMax = Integer.MIN_VALUE; public static int sampleCodeMin = Integer.MAX_VALUE;
   public int clumpThickness; public static int clumpThicknessMax = Integer.MIN_VALUE; public static int clumpThicknessMin = Integer.MAX_VALUE;
