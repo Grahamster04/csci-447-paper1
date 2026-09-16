@@ -214,7 +214,8 @@ public class Main{
                         }
                         System.out.println("E: " + e[eIndex] +", K: " + k[kIndex] + ", Y: " + y[yIndex]);
                         if (classification && (yIndex == 0)) {
-                            System.out.println("Percent correct: " + (guessCorrect / pointsSurveyed));
+                            double perCor = ((double) guessCorrect / (double) pointsSurveyed) * 100;
+                            System.out.println("Percent correct: %" + perCor);
                         } else {
                             System.out.println("Mean squared error: " + (squaredErrorSum / pointsSurveyed));
                         }
@@ -280,6 +281,7 @@ public class Main{
 
             if (count > maxCount){
                 mostCommonElement = outputs[i];
+                maxCount = count;
             }
             if (count == maxCount){
                 Random random = new Random();
@@ -291,8 +293,9 @@ public class Main{
         }
 
 
+
                //Tally up the most common output, and return that value as a double
-        return 0;
+        return mostCommonElement;
     }
 
     public static ArrayList<normalizedData> editedTrainingData(ArrayList<normalizedData> originalTrainingData, double e, boolean classification){
