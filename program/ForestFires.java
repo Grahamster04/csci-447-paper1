@@ -19,19 +19,19 @@ public class ForestFires {
 
   static ArrayList<ForestFires> totalFires = new ArrayList<>();
 
-  public int xCor;
-  public int yCor;
+  public int xCor; public static int xCorMax;
+  public int yCor; public static int yCorMax;
   public String month; //Review this encoding. Maybe cast to integer?
   public String day;
-  public float ffmc;
-  public float dmc;
-  public float dc;
-  public float isi;
-  public float temp;
-  public float rh;
-  public float wind;
-  public float rain;
-  public float area;
+  public float ffmc; public static float ffmcMax;
+  public float dmc; public static float dmcMax;
+  public float dc; public static float dcMax;
+  public float isi; public static float isiMax;
+  public float temp; public static float tempMax;
+  public float rh; public static float rhMax;
+  public float wind; public static float windMax;
+  public float rain; public static float rainMax;
+  public float area; public static float areaMax;
 
   ForestFires(int x, int y, String m, String dc, float f, float dm, float d, float i, float t, float r, float w, float ra, float ar) {
     this.xCor = x;
@@ -69,6 +69,20 @@ public class ForestFires {
                 Float.parseFloat(split[10]),
                 Float.parseFloat(split[11]),
                 Float.parseFloat(split[12]));
+
+        // Normalization tracking
+        if (temp.xCor > xCorMax) { xCorMax = temp.xCor; }
+        if (temp.yCor > yCorMax) { yCorMax = temp.yCor; }
+        if (temp.ffmc > ffmcMax) { ffmcMax = temp.ffmc; }
+        if (temp.dmc > dmcMax) { dmcMax = temp.dmc; }
+        if (temp.dc > dcMax) { dcMax = temp.dc; }
+        if (temp.isi > isiMax) { isiMax = temp.isi; }
+        if (temp.temp > tempMax) { tempMax = temp.temp; }
+        if (temp.rh > rhMax) { rhMax = temp.rh; }
+        if (temp.wind > windMax) { windMax = temp.wind; }
+        if (temp.rain > rainMax) { rainMax = temp.rain; }
+        if (temp.area > areaMax) { areaMax = temp.area; }
+
         totalFires.add(temp);
       }
     } catch (IOException e) {
@@ -83,6 +97,34 @@ public class ForestFires {
     }
     return Integer.parseInt(input.trim());
   }
+
+  public double[] getFeatures() {
+    return new double[] {
+            encodexCor(),
+            encodeyCor(),
+            encodeffmc(),
+            encodedmc(),
+            encodedc(),
+            encodeisi(),
+            encodetemp(),
+            encoderh(),
+            encodewind(),
+            encoderain(),
+            encodearea(),
+    };
+  }
+
+  private double encodexCor() { return (double) xCor / xCorMax; }
+  private double encodeyCor() { return (double) yCor / yCorMax; }
+  private double encodeffmc() { return (double) ffmc / ffmcMax; }
+  private double encodedmc() { return (double) dmc / dmcMax; }
+  private double encodedc() { return (double) dc / dcMax; }
+  private double encodeisi() { return (double) isi / isiMax; }
+  private double encodetemp() { return (double) temp / tempMax; }
+  private double encoderh() { return (double) rh / rhMax; }
+  private double encodewind() { return (double) wind / windMax; }
+  private double encoderain() { return (double) rain / rainMax; }
+  private double encodearea() { return (double) area / areaMax; }
 
   public static void classify () {
     float averageArea = 0;

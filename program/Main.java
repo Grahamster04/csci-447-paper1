@@ -1,5 +1,5 @@
 public class Main{
-    public static final String FILE_NAME = "data/machine.data";
+    public static final String FILE_NAME = "data/forestfires.data";
 
     public static final String abalone = "data/abalone.data";
     public static final String breastCancer = "data/breast-cancer-wisconsin.data";
