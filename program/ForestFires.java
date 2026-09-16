@@ -3,7 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ForestFires {
+public class ForestFires implements normalizedFeatures{
   //Forest Fires [Regression]
 // Overview: This is a difficult regression task, where the aim is to predict the burned area of forest
 // fires by using meteorological and other data.
@@ -19,19 +19,19 @@ public class ForestFires {
 
   static ArrayList<ForestFires> totalFires = new ArrayList<>();
 
-  public int xCor; public static int xCorMax;
-  public int yCor; public static int yCorMax;
+  public int xCor; public static int xCorMax = Integer.MIN_VALUE; public static int xCorMin = Integer.MIN_VALUE;
+  public int yCor; public static int yCorMax = Integer.MIN_VALUE; public static int yCorMin = Integer.MIN_VALUE;
   public String month; //Review this encoding. Maybe cast to integer?
   public String day;
-  public float ffmc; public static float ffmcMax;
-  public float dmc; public static float dmcMax;
-  public float dc; public static float dcMax;
-  public float isi; public static float isiMax;
-  public float temp; public static float tempMax;
-  public float rh; public static float rhMax;
-  public float wind; public static float windMax;
-  public float rain; public static float rainMax;
-  public float area; public static float areaMax;
+  public float ffmc; public static float ffmcMax = Float.NEGATIVE_INFINITY; public static float ffmcMin = Float.POSITIVE_INFINITY;
+  public float dmc; public static float dmcMax = Float.NEGATIVE_INFINITY; public static float dmcMin = Float.POSITIVE_INFINITY;
+  public float dc; public static float dcMax = Float.NEGATIVE_INFINITY; public static float dcMin = Float.POSITIVE_INFINITY;
+  public float isi; public static float isiMax = Float.NEGATIVE_INFINITY; public static float isiMin = Float.POSITIVE_INFINITY;
+  public float temp; public static float tempMax = Float.NEGATIVE_INFINITY; public static float tempMin = Float.POSITIVE_INFINITY;
+  public float rh; public static float rhMax = Float.NEGATIVE_INFINITY; public static float rhMin = Float.POSITIVE_INFINITY;
+  public float wind; public static float windMax = Float.NEGATIVE_INFINITY; public static float windMin = Float.POSITIVE_INFINITY;
+  public float rain; public static float rainMax = Float.NEGATIVE_INFINITY; public static float rainMin = Float.POSITIVE_INFINITY;
+  public float area;
 
   ForestFires(int x, int y, String m, String dc, float f, float dm, float d, float i, float t, float r, float w, float ra, float ar) {
     this.xCor = x;
@@ -71,17 +71,16 @@ public class ForestFires {
                 Float.parseFloat(split[12]));
 
         // Normalization for forest fires
-        if (temp.xCor > xCorMax) { xCorMax = temp.xCor; }
-        if (temp.yCor > yCorMax) { yCorMax = temp.yCor; }
-        if (temp.ffmc > ffmcMax) { ffmcMax = temp.ffmc; }
-        if (temp.dmc > dmcMax) { dmcMax = temp.dmc; }
-        if (temp.dc > dcMax) { dcMax = temp.dc; }
-        if (temp.isi > isiMax) { isiMax = temp.isi; }
-        if (temp.temp > tempMax) { tempMax = temp.temp; }
-        if (temp.rh > rhMax) { rhMax = temp.rh; }
-        if (temp.wind > windMax) { windMax = temp.wind; }
-        if (temp.rain > rainMax) { rainMax = temp.rain; }
-        if (temp.area > areaMax) { areaMax = temp.area; }
+        if (temp.xCor > xCorMax) { xCorMax = temp.xCor; } if (temp.xCor < xCorMin) { xCorMin = temp.xCor; }
+        if (temp.yCor > yCorMax) { yCorMax = temp.yCor; } if (temp.yCor < yCorMin) { yCorMin = temp.yCor; }
+        if (temp.ffmc > ffmcMax) { ffmcMax = temp.ffmc; } if (temp.ffmc < ffmcMin) { ffmcMin = temp.ffmc; }
+        if (temp.dmc > dmcMax) { dmcMax = temp.dmc; } if (temp.dmc < dmcMin) { dmcMin = temp.dmc; }
+        if (temp.dc > dcMax) { dcMax = temp.dc; } if (temp.dc < dcMin) { dcMin = temp.dc; }
+        if (temp.isi > isiMax) { isiMax = temp.isi; } if (temp.isi < isiMin) { isiMin = temp.isi; }
+        if (temp.temp > tempMax) { tempMax = temp.temp; } if (temp.temp < tempMin) { tempMin = temp.temp; }
+        if (temp.rh > rhMax) { rhMax = temp.rh; } if (temp.rh < rhMin) { rhMin = temp.rh; }
+        if (temp.wind > windMax) { windMax = temp.wind; } if (temp.wind < windMin) { windMin = temp.wind; }
+        if (temp.rain > rainMax) { rainMax = temp.rain; } if (temp.rain < rainMin) { rainMin = temp.rain; }
 
         totalFires.add(temp);
       }
@@ -110,21 +109,22 @@ public class ForestFires {
             encoderh(),
             encodewind(),
             encoderain(),
-            encodearea(),
     };
   }
 
-  private double encodexCor() { return (double) xCor / xCorMax; }
-  private double encodeyCor() { return (double) yCor / yCorMax; }
-  private double encodeffmc() { return (double) ffmc / ffmcMax; }
-  private double encodedmc() { return (double) dmc / dmcMax; }
-  private double encodedc() { return (double) dc / dcMax; }
-  private double encodeisi() { return (double) isi / isiMax; }
-  private double encodetemp() { return (double) temp / tempMax; }
-  private double encoderh() { return (double) rh / rhMax; }
-  private double encodewind() { return (double) wind / windMax; }
-  private double encoderain() { return (double) rain / rainMax; }
-  private double encodearea() { return (double) area / areaMax; }
+  @Override
+  public double getLable() { return area; }
+
+  private double encodexCor() { return (double) (xCor - xCorMin) / (xCorMax - xCorMin); }
+  private double encodeyCor() { return (double) (yCor - yCorMin) / (yCorMax - yCorMin); }
+  private double encodeffmc() { return (double) (ffmc - ffmcMin) / (ffmcMax - ffmcMin); }
+  private double encodedmc() { return (double) (dmc - dmcMin) / (dmcMax - dmcMin); }
+  private double encodedc() { return (double) (dc - dcMin) / (dcMax - dcMin); }
+  private double encodeisi() { return (double) (isi - isiMin) / (isiMax - isiMin); }
+  private double encodetemp() { return (double) (temp - tempMin) / (tempMax - tempMin); }
+  private double encoderh() { return (double) (rh - rhMin) / (rhMax - rhMin); }
+  private double encodewind() { return (double) (wind - windMin) / (windMax - windMin); }
+  private double encoderain() { return (double) (rain - rainMin) / (rainMax - rainMin); }
 
   public static void classify () {
     float averageArea = 0;
@@ -137,5 +137,4 @@ public class ForestFires {
     averageArea = averageArea / numFires;
     System.out.println("Average Area: " + averageArea + "\nNumber of Fires: " + numFires);
   }
-  
 }
