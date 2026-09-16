@@ -71,11 +71,7 @@ public class Abalone implements normalizedFeatures{
       e.printStackTrace();
     }
 
-    for (Abalone data : data) {
-      System.out.println(data);
-    }
-    System.out.println( lengthMax + "," + diameterMax + "," + heightMax + "," + wholeWeightMax + "," +
-            shuckedWeightMax + "," + visceraWeightMax + "," + shellWeightMax);
+
   }
 
   @Override
