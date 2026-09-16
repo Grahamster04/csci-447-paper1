@@ -89,48 +89,77 @@ public class Main{
         //K NEAREST NEIGHBOR WITH NEW STRUCTURE FULL OF NORMALIZED DATA
         // ------------------------------------------------------------------------------------------
 
-        int currentIndex = splitIndex;
-        normalizedData[] nearestPoints = new normalizedData[k];
-        double[] nearestDistances = new double[k];
-        Arrays.fill(nearestDistances, Double.POSITIVE_INFINITY);
-
-        normalizedData measurePoint = data.get(splitIndex + 1);
-        normalizedData tempPoint;
-
-        for (int i = 0; i < splitIndex; i++) {
-            tempPoint = data.get(i);
-            double distance = euclideanDistance(measurePoint.getFeatures(), tempPoint.getFeatures());
 
 
-            int largestIndex = 0;
+        //regression variable
+        double squaredErrorSum = 0;
 
-            for (int j = 1; j < k; j++) {
-                if (nearestDistances[j] > nearestDistances[largestIndex]) {
-                    largestIndex = j;
+        //clasification variable
+        int guessCorrect = 0;
+
+        //both
+        int pointsSurveyed = 0;
+
+        //LOOP EVERY POINT, loops through every data point in the testing set, and tests it against the
+        for (int currentIndex = splitIndex + 1; currentIndex < lastIndex; currentIndex++ ) {
+            normalizedData[] nearestPoints = new normalizedData[k];
+            double[] nearestDistances = new double[k];
+            Arrays.fill(nearestDistances, Double.POSITIVE_INFINITY);
+
+            normalizedData measurePoint = data.get(currentIndex);
+            normalizedData tempPoint;
+
+            for (int i = 0; i < splitIndex; i++) {
+                tempPoint = data.get(i);
+                double distance = euclideanDistance(measurePoint.getFeatures(), tempPoint.getFeatures());
+
+
+                int largestIndex = 0;
+
+                for (int j = 1; j < k; j++) {
+                    if (nearestDistances[j] > nearestDistances[largestIndex]) {
+                        largestIndex = j;
+                    }
                 }
+                if (nearestDistances[largestIndex] > distance) {
+                    nearestPoints[largestIndex] = tempPoint;
+                    nearestDistances[largestIndex] = distance;
+                }
+
             }
-            if (nearestDistances[largestIndex] > distance) {
-                nearestPoints[largestIndex] = tempPoint;
-                nearestDistances[largestIndex] = distance;
+            System.out.println("Point picked: " + measurePoint);
+            System.out.println("Nearests:");
+            for (int i = 0; i < k; i++) {
+                System.out.println("Distance: " + nearestDistances[i] + ", Params: " + nearestPoints[i]);
             }
+            double guess;
+            if (classification) {
+                guess = makeGuessClassification(nearestPoints);
+                //possibly convert guess back to its catagorical right here?
+                if (guess == data.get(currentIndex).getTarget()){
+                    guessCorrect++;
+                }
+            } else {
+                guess = makeGuessRegression(nearestDistances, nearestPoints);
+                System.out.println("Our Guess: " + guess);
+                System.out.println("Real Value: " + measurePoint.getTarget());
+                squaredErrorSum += Math.pow(measurePoint.getTarget() - guess, 2);
+            }
+            pointsSurveyed++;
 
         }
-        System.out.println("Point picked: " + measurePoint);
-        System.out.println("Nearests:");
-        for (int i = 0; i < k; i++) {
-            System.out.println("Distance: " + nearestDistances[i] + ", Params: " + nearestPoints[i]);
-        }
-        double guess;
-        if (classification) {
-            guess = makeGuessClassification(nearestPoints);
-            //possibly convert guess back to its catagorical right here?
-        }
-        else {
-            guess = makeGuessRegression(nearestDistances, nearestPoints);
-            System.out.println("Our Guess: " + guess);
-            System.out.println("Real Value: " + measurePoint.getTarget());
-        }
 
+        if (classification){
+            System.out.println("Percent correct: " + (guessCorrect/pointsSurveyed));
+        }
+        else{
+            System.out.println("Mean squared error: " + (squaredErrorSum/pointsSurveyed));
+        }
+        System.out.println("Points surveyed: " + pointsSurveyed);
+
+        //---------------------------------------------------------
+        // END K NEAREST
+        //---------------------------------------------------------
 
 
   // Edited/Condensed K-Nearest Neighbor
@@ -141,6 +170,13 @@ public class Main{
     // Classification (plurality vote)
     // Regression (Gaussian kernal)
     }
+
+
+
+
+
+
+
 
     private static double makeGuessRegression( double[] distances, normalizedData[] points) {
         double[] weights = new double[k];
