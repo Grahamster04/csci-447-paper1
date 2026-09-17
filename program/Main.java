@@ -3,7 +3,7 @@ import java.util.*;
 public class Main{
     // CHANGABLE ATRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/breast-cancer-wisconsin.data";
+    public static final String FILE_NAME = "data/house-votes-84.data";
     public static int kIndex = 0;
     public static int yIndex = 0;
     public static int eIndex = 0;
@@ -56,32 +56,57 @@ public class Main{
             }
             BreastCancer.classify();
         }
+
         if (FILE_NAME.equals(car)){
             System.out.println("FILE CAR");
             classification = true;
             numAtributes = 6;
             Car.collectData();
+
+            for (int i = 0; i < Car.data.size(); i++) {
+                Car point = Car.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
+                //System.out.println("Added:" + point + ", new:" + data.getLast());
+            }
             Car.classify();
         }
-        if (FILE_NAME == fires) {
+        if (FILE_NAME.equals(fires)) {
             System.out.println("FILE FOREST FIRES");
             classification = false;
             numAtributes = 13;
             ForestFires.collectData();
+
+            for (int i = 0; i < ForestFires.data.size(); i++) {
+                ForestFires point = ForestFires.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
+                //System.out.println("Added:" + point + ", new:" + data.getLast());
+            }
             ForestFires.classify();
         }
-        if (FILE_NAME == houseVotes) {
+        if (FILE_NAME.equals(houseVotes)) {
             System.out.println("FILE HOUSE VOTES");
             classification = true;
             numAtributes = 17;
             HouseVotes.collectData();
+
+            for (int i = 0; i < HouseVotes.data.size(); i++) {
+                HouseVotes point = HouseVotes.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
+                //System.out.println("Added:" + point + ", new:" + data.getLast());
+            }
             HouseVotes.classify();
         }
-        if (FILE_NAME == machine) {
+        if (FILE_NAME.equals(machine)) {
             System.out.println("FILE MACHINE");
             classification = false;
             numAtributes = 10;
             Machine.collectData();
+
+            for (int i = 0; i < Machine.data.size(); i++) {
+                Machine point = Machine.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
+                //System.out.println("Added:" + point + ", new:" + data.getLast());
+            }
             Machine.classify();
         }
 

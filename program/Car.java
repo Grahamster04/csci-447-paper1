@@ -14,7 +14,7 @@ public class Car implements normalizedFeatures {
 // Notes: All of the features should be treated as if they are nominal even though, technically, they are
 // ordinal. This is a four-class problem
 
-  static ArrayList<Car> garage = new ArrayList<>();
+  static ArrayList<Car> data = new ArrayList<>();
 
   public String buying;
   public String maint;
@@ -47,12 +47,12 @@ public class Car implements normalizedFeatures {
                 split[4],
                 split[5],
                 split[6]);
-        garage.add(temp);
+        data.add(temp);
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return garage;
+    return data;
   }
 
   @Override
@@ -134,7 +134,7 @@ public class Car implements normalizedFeatures {
     int g = 0;
     int v = 0;
 
-    for (Car entry : garage) {
+    for (Car entry : data) {
       if (entry.condition.equals("unacc")) {
         u++;
       } else if (entry.condition.equals("acc")){

@@ -17,7 +17,7 @@ public class ForestFires implements normalizedFeatures{
 // features (e.g., in the absence of date information, the distance between December and January is
 // only 1.0, not 11.0).
 
-  static ArrayList<ForestFires> totalFires = new ArrayList<>();
+  static ArrayList<ForestFires> data = new ArrayList<>();
 
   public int xCor; public static int xCorMax = Integer.MIN_VALUE; public static int xCorMin = Integer.MIN_VALUE;
   public int yCor; public static int yCorMax = Integer.MIN_VALUE; public static int yCorMin = Integer.MIN_VALUE;
@@ -82,12 +82,12 @@ public class ForestFires implements normalizedFeatures{
         if (temp.wind > windMax) { windMax = temp.wind; } if (temp.wind < windMin) { windMin = temp.wind; }
         if (temp.rain > rainMax) { rainMax = temp.rain; } if (temp.rain < rainMin) { rainMin = temp.rain; }
 
-        totalFires.add(temp);
+        data.add(temp);
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return totalFires;
+    return data;
   }
 
   private static Integer parseInteger(String input) {
@@ -129,7 +129,7 @@ public class ForestFires implements normalizedFeatures{
   public static void classify () {
     float averageArea = 0;
     int numFires = 0;
-    for (ForestFires entry : totalFires) {
+    for (ForestFires entry : data) {
       averageArea += entry.area;
       numFires++;
     }

@@ -13,7 +13,7 @@ public class HouseVotes implements normalizedFeatures{
   // Notes: Be careful with this data set since “?” does not indicate a missing attribute value. It actually
   // means “abstain.” This is a two-class problem.
 
-  static ArrayList<HouseVotes> votes = new ArrayList<>();
+  static ArrayList<HouseVotes> data = new ArrayList<>();
 
   public String party;
   public char handicapped_infants;
@@ -76,13 +76,13 @@ public class HouseVotes implements normalizedFeatures{
                 split[14].charAt(0),
                 split[15].charAt(0),
                 split[16].charAt(0));
-        votes.add(temp);
+        data.add(temp);
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    return votes;
+    return data;
   }
 
   @Override
@@ -129,7 +129,7 @@ public class HouseVotes implements normalizedFeatures{
   public static void classify() {
     int d = 0;
     int r = 0;
-    for (HouseVotes entry : votes) {
+    for (HouseVotes entry : data) {
       if (entry.party.equals("democrat")) {
         d++;
       } else {
