@@ -12,6 +12,8 @@ public class Abalone implements normalizedFeatures{
 // classification problem. You are trying to predict (regress) the number of rings. All of the features
 // are real-valued except for sex. You may choose between one-hot coding this feature, or discarding
 // it."
+  public static ArrayList<Abalone> data = new ArrayList<>();
+
   public char sex;
   public float length; public static float lengthMax = Float.NEGATIVE_INFINITY; public static float lengthMin = Float.POSITIVE_INFINITY;
   public float diameter; public static float diameterMax = Float.NEGATIVE_INFINITY; public static float diameterMin = Float.POSITIVE_INFINITY;
@@ -21,9 +23,6 @@ public class Abalone implements normalizedFeatures{
   public float visceraWeight;  public static float visceraWeightMax = Float.NEGATIVE_INFINITY; public static float visceraWeightMin = Float.POSITIVE_INFINITY;
   public float shellWeight; public static float shellWeightMax = Float.NEGATIVE_INFINITY; public static float shellWeightMin = Float.POSITIVE_INFINITY;
   public int rings;
-
-  public static ArrayList<Abalone> data = new ArrayList<>();
-
 
   Abalone(char s, float l, float d, float h, float wW, float suW, float vW, float seW, int r) {
     this.sex = s;
@@ -41,7 +40,7 @@ public class Abalone implements normalizedFeatures{
     try (BufferedReader br = new BufferedReader(new FileReader("data/abalone.data"))) {
       String line;
 
-      //Creates Abaline ojects for all lines of data and puts them in an array list
+      //Creates Abalone ojects for all lines of data and puts them in an array list
       while ((line = br.readLine()) != null) {
         String[] split = line.split(",");
         Abalone temp = new Abalone(
@@ -127,6 +126,19 @@ public class Abalone implements normalizedFeatures{
   public double getLable() {
     return rings;
   }
+
+  public static void classify () {
+    float averageRings = 0;
+    int numAbalones = 0;
+    for (Abalone entry : data) {
+      averageRings += entry.rings;
+      numAbalones++;
+    }
+
+    averageRings = averageRings / numAbalones;
+    System.out.println("Average Rings: " + averageRings + "\nNumber of Abalones: " + numAbalones);
+  }
+
   public String toString() {
     return sex + "," + length + "," + diameter + "," + height + "," + wholeWeight + "," +
             shuckedWeight + "," + visceraWeight + "," + shellWeight + "," + rings;
