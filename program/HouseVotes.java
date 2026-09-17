@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class HouseVotes{
+public class HouseVotes implements normalizedFeatures{
   // Overview: This data set includes votes for each of the U.S. House of Representatives Congressmen
   // on the 16 key votes identified by the Congressional Quarterly Almanac.
   // Predictor: Class: democrat, republican
@@ -85,6 +85,47 @@ public class HouseVotes{
     return votes;
   }
 
+  @Override
+  public double[] getFeatures() {
+    return new double[] {
+            encodeVote(handicapped_infants),
+            encodeVote(water_sharing),
+            encodeVote(budget),
+            encodeVote(fee_freeze),
+            encodeVote(el_salvador),
+            encodeVote(religion),
+            encodeVote(satellite),
+            encodeVote(nicaragua),
+            encodeVote(missile),
+            encodeVote(immigration),
+            encodeVote(cutback),
+            encodeVote(education),
+            encodeVote(right_to_sue),
+            encodeVote(crime),
+            encodeVote(export),
+            encodeVote(south_africa)
+    };
+  }
+
+  @Override
+  public double getLable() {
+    if (party.equals("democrat")) {
+      return 1.0;
+    } else {
+      return 0.0;
+    }
+  }
+
+  private double encodeVote(char vote) {
+    if (vote == 'y') {
+      return 1.0;
+    } else if (vote == 'n') {
+      return 0.0;
+    } else {
+      return -1.0; // Abstain / unknown
+    }
+  }
+
   public static void classify() {
     int d = 0;
     int r = 0;
@@ -111,4 +152,3 @@ public class HouseVotes{
               "," + education + "," + right_to_sue + "," + crime + "," + export + "," + south_africa;
     }
 }
-

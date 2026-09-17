@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Car {
+public class Car implements normalizedFeatures {
   //Car Evaluation [Classification]
 // Overview: The data is on evaluations of car acceptability based on price, comfort, and technical
 // specifications.
@@ -53,6 +53,79 @@ public class Car {
       e.printStackTrace();
     }
     return garage;
+  }
+
+  @Override
+  public double[] getFeatures() {
+    return new double[] {
+            encodeBuying(),
+            encodeMaint(),
+            encodeDoors(),
+            encodePersons(),
+            encodeLugBoot(),
+            encodeSafety()
+    };
+  }
+
+  private double encodeBuying() {
+    switch (buying) {
+      case "vhigh": return 0.0;
+      case "high":  return 0.333;
+      case "med":   return 0.666;
+      default:   return 1.0;
+    }
+  }
+
+  private double encodeMaint() {
+    switch (this.maint) {
+      case "vhigh": return 0.0;
+      case "high":  return 0.333;
+      case "med":   return 0.666;
+      default:   return 1.0;
+    }
+  }
+
+  private double encodeDoors() {
+    switch (this.doors) {
+      case "2":     return 0.0;
+      case "3":     return 0.333;
+      case "4":     return 0.666;
+      default: return 1.0;
+    }
+  }
+
+  private double encodePersons() {
+    switch (this.persons) {
+      case "2":    return 0.0;
+      case "4":    return 0.5;
+      default: return 1.0;
+    }
+  }
+
+  private double encodeLugBoot() {
+    switch (lugBoot) {
+      case "small": return 0.0;
+      case "med":   return 0.5;
+      default:   return 1.0;
+    }
+  }
+
+  private double encodeSafety() {
+    switch (this.safety) {
+      case "low":  return 0.0;
+      case "med":  return 0.5;
+      default: return 1.0;
+    }
+  }
+
+  @Override
+  public double getLable() {
+    switch (condition) {
+      case "unnac": return 0.0;
+      case "acc": return 0.33;
+      case "good": return 0.66;
+      default: return 1.0;
+    }
   }
 
   public static void classify() {

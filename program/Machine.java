@@ -3,7 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Machine {
+public class Machine implements normalizedFeatures {
 
     static ArrayList<Machine> hardwareStorage = new ArrayList<>();
 
@@ -72,6 +72,11 @@ public class Machine {
                 encodePRP(),
                 encodeERP()
         };
+    }
+
+    @Override
+    public double getLable() {
+        return PRP;
     }
 
     private double encodeMYCT() { return (double) MYCT / MYCTMax; }
