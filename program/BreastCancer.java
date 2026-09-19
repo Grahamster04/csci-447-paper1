@@ -124,6 +124,8 @@ public class BreastCancer implements normalizedFeatures {
   public static void classify () {
     int b = 0;
     int m = 0;
+    int total = data.size();
+
     for (BreastCancer entry : data) {
       if (entry.classes == 2) {
         b++;
@@ -132,12 +134,16 @@ public class BreastCancer implements normalizedFeatures {
       }
     }
 
+    double accuracy;
     System.out.println("Benign: " + b + "\nMalignant: " + m);
     if (b > m) {
+      accuracy = (double) b / total * 100;
       System.out.println("benign");
-    } else {
+      System.out.println("Null Model Accuracy: " + accuracy + "%");
+  } else {
+      accuracy = (double) m / total * 100;
       System.out.println("malignant");
-    }
+      System.out.println("Null Model Accuracy: " + accuracy + "%");}
   }
 
   public String toString() {
