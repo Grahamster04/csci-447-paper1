@@ -3,14 +3,19 @@ import java.util.*;
 public class Main{
     // CHANGABLE ATRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/house-votes-84.data";
+    public static final String FILE_NAME = "data/abalone.data";
     public static int kIndex = 0;
     public static int yIndex = 0;
     public static int eIndex = 0;
 
-    public static int[] k = {1, 3, 5, 7, 9, 11, 15};
-    public static double[] y = {.01, .1, .5, 1, 2, 5, 10 };
-    public static double[] e = {.5, 1, 1.5, 2, 3, 4, 5};
+    public static int[] k = {1, 3, 5, 7, 9, 11, 13, 15};
+    //public static int[] k = {3};
+    public static double[] y = {.01, .1, 1, 2, 5, 10, 15, 20, 50};
+    //public static double[] y = {5, 10, 20, 50, 100 };
+    //public static double[] y = {20};
+    public static double[] e = {2, 3, 4, 5, 6, 7, 8, 10, 15};
+
+    static boolean edit = false;
     //-------------------------------------
 
     public static final String abalone = "data/abalone.data";
@@ -112,9 +117,9 @@ public class Main{
 
         if (classification){
             y = new double[1];
-            y[0] = 1;
+            y[0] = 0;
             e = new double[1];
-            e[0] = 1;
+            e[0] = 0;
 
         }
 
@@ -142,14 +147,7 @@ public class Main{
         // Classification
         // Regression
 
-        //---------------------------------
-        //Edited condensed nearest neigbor
-        //---------------------------------
-        ArrayList<normalizedData> newData = new ArrayList<>(data);
 
-        for(normalizedData point : newData){
-
-        }
 
 
 
@@ -157,24 +155,37 @@ public class Main{
         //K NEAREST NEIGHBOR WITH NEW STRUCTURE FULL OF NORMALIZED DATA
         // ------------------------------------------------------------------------------------------
 
-        //loop through different epsilon values?
-        ArrayList<normalizedData> firstHalfEdited = editedTrainingData(firstHalf, e[eIndex], classification);
-        ArrayList<normalizedData> secondHalfEdited = editedTrainingData(secondHalf, e[eIndex], classification);
+        ArrayList<normalizedData> firstHalfEdited;
+        ArrayList<normalizedData> secondHalfEdited;
 
+        if(edit) {
+            firstHalfEdited = editedTrainingData(firstHalf, e[eIndex], classification);
+            secondHalfEdited = editedTrainingData(secondHalf, e[eIndex], classification);
+        }
+        else {
+            firstHalfEdited = firstHalf;
+            secondHalfEdited = secondHalf;
+            e = new double[1];
+            e[0] = 0;
+        }
         ArrayList<normalizedData> trainingData;
         ArrayList<normalizedData> testData;
         for (int dataHalfsSwaper = 0; dataHalfsSwaper < 2; dataHalfsSwaper++) { //Swaping the test and training daat
-            if (dataHalfsSwaper == 0) {
-                trainingData = firstHalfEdited;
-                testData = secondHalf;
-                System.out.println("-----------FIRST CONFIG-----------------");
-            } else {
-                trainingData = secondHalfEdited;
-                testData = firstHalf;
-                System.out.println("-----------SECOND CONFIG----------------");
-            }
             //loops throught different k values
             for (eIndex = 0; eIndex < e.length; eIndex++ ) {
+                if(edit) {
+                    firstHalfEdited = editedTrainingData(firstHalf, e[eIndex], classification);
+                    secondHalfEdited = editedTrainingData(secondHalf, e[eIndex], classification);
+                }
+                if (dataHalfsSwaper == 0) {
+                    trainingData = firstHalfEdited;
+                    testData = secondHalf;
+                    System.out.println("-----------FIRST CONFIG-----------------");
+                } else {
+                    trainingData = secondHalfEdited;
+                    testData = firstHalf;
+                    System.out.println("-----------SECOND CONFIG----------------");
+                }
                 for (kIndex = 0; kIndex < k.length; kIndex++) { //try different k values
                     for (yIndex = 0; yIndex < y.length; yIndex++) { // try different y values
 
@@ -370,7 +381,8 @@ public class Main{
                 newTrainingData.removeAll(pointsToRemove);
                 removedPoint = true;
             }
-            System.out.println("Editing pass " + passNumber + ": removed " + pointsToRemove.size() + ", remaining " + newTrainingData.size());
+
+            //System.out.println("Editing pass " + passNumber + " at e:" + e + ": removed " + pointsToRemove.size() + ", remaining " + newTrainingData.size());
             if (newTrainingData.size() <= 1) {
                 break;
             }
