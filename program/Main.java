@@ -3,7 +3,7 @@ import java.util.*;
 public class Main{
     // CHANGABLE ATRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/house-votes-84.data";
+    public static final String FILE_NAME = "data/machine.data";
     public static int kIndex = 0;
     public static int yIndex = 0;
     public static int eIndex = 0;

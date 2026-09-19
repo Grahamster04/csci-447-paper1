@@ -96,7 +96,16 @@ public class Machine implements normalizedFeatures{
             numUnits++;
         }
 
+        float sumSquaredErrors = 0;
+        for (Machine entry : data) {
+            float diff = entry.PRP - averagePRP;
+            sumSquaredErrors += diff * diff;
+        }
+
         averagePRP = averagePRP / numUnits;
+        float mse = sumSquaredErrors / numUnits;
+
         System.out.println("Average PRP: " + averagePRP + "\nNumber of Units: " + numUnits);
+        System.out.println("MSE: " + mse);
     }
 }

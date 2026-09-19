@@ -135,8 +135,17 @@ public class Abalone implements normalizedFeatures{
       numAbalones++;
     }
 
+    float sumSquaredErrors = 0;
+    for (Abalone entry : data) {
+      float diff = entry.rings - averageRings;
+      sumSquaredErrors += diff * diff;
+    }
+
     averageRings = averageRings / numAbalones;
+    float mse = sumSquaredErrors / numAbalones;
+
     System.out.println("Average Rings: " + averageRings + "\nNumber of Abalones: " + numAbalones);
+    System.out.println("MSE: " + mse);
   }
 
   public String toString() {
