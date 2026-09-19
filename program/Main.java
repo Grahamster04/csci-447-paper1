@@ -381,8 +381,7 @@ public class Main{
                 newTrainingData.removeAll(pointsToRemove);
                 removedPoint = true;
             }
-
-            //System.out.println("Editing pass " + passNumber + " at e:" + e + ": removed " + pointsToRemove.size() + ", remaining " + newTrainingData.size());
+            System.out.println("Editing pass " + passNumber + ": removed " + pointsToRemove.size() + ", remaining " + newTrainingData.size());
             if (newTrainingData.size() <= 1) {
                 break;
             }

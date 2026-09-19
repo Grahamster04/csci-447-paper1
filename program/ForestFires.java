@@ -134,7 +134,15 @@ public class ForestFires implements normalizedFeatures{
       numFires++;
     }
 
+    float sumSquaredErrors = 0;
+    for (ForestFires entry : data) {
+      float diff = entry.area - averageArea;
+      sumSquaredErrors += diff * diff;
+    }
+
+    float mse = sumSquaredErrors / numFires;
     averageArea = averageArea / numFires;
     System.out.println("Average Area: " + averageArea + "\nNumber of Fires: " + numFires);
+    System.out.println("MSE: " + mse);
   }
 }

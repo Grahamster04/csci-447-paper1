@@ -129,6 +129,8 @@ public class HouseVotes implements normalizedFeatures{
   public static void classify() {
     int d = 0;
     int r = 0;
+    int total = data.size();
+
     for (HouseVotes entry : data) {
       if (entry.party.equals("democrat")) {
         d++;
@@ -137,14 +139,18 @@ public class HouseVotes implements normalizedFeatures{
       }
     }
 
+    double accuracy;
     System.out.println("Democrat: " + d + "\nRepublican: " + r);
     if (r > d) {
+      accuracy = (double) d / total * 100;
       System.out.println("republican");
+      System.out.println("Null Model Accuracy: " + accuracy + "%");
     } else {
+      accuracy = (double) d / total * 100;
       System.out.println("democrat");
+      System.out.println("Null Model Accuracy: " + accuracy + "%");
     }
   }
-
     @Override
     public String toString() {
       return party + "," + handicapped_infants + "," + budget + "," + fee_freeze + "," + el_salvador + "," +

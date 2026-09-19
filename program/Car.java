@@ -133,6 +133,8 @@ public class Car implements normalizedFeatures {
     int a = 0;
     int g = 0;
     int v = 0;
+    int total = data.size();
+
 
     for (Car entry : data) {
       if (entry.condition.equals("unacc")) {
@@ -151,14 +153,23 @@ public class Car implements normalizedFeatures {
 
     System.out.println("unacc: " + u + "\nacc: " + a + "\ngood: " + g + "\nv-good: " + v);
 
+    double accuracy;
     if (numbers[numbers.length-1] == u) {
+      accuracy = (double) u / total * 100;
       System.out.println("unacceptable");
-    } else if (numbers[numbers.length-1] == a) {
+      System.out.println("Null Model Accuracy: " + accuracy + "%");
+  } else if (numbers[numbers.length-1] == a) {
+      accuracy = (double) a / total * 100;
+      System.out.println("Null Model Accuracy: " + accuracy + "%");
       System.out.println("acceptable");
     } else if (numbers[numbers.length-1] == g) {
+      accuracy = (double) g / total * 100;
       System.out.println("good");
+      System.out.println("Null Model Accuracy: " + accuracy + "%");
     } else {
+      accuracy = (double) v / total * 100;
       System.out.println("very good");
+      System.out.println("Null Model Accuracy: " + accuracy + "%");
     }
   }
 }
