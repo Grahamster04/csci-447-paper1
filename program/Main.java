@@ -3,7 +3,7 @@ import java.util.*;
 public class Main{
     // CHANGABLE ATRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/car.data";
+    public static final String FILE_NAME = "data/machine.data";
     public static int kIndex = 0;
     public static int yIndex = 0;
     public static int eIndex = 0;
@@ -30,7 +30,7 @@ public class Main{
 
     public static void main(String[] args) {
         //READ FILE FROM FILE NAME
-        if (FILE_NAME.equals(abalone)){
+        if (FILE_NAME.equals(abalone)) {
             System.out.println("FILE ABALONE");
             classification = false;
             numAtributes = 9;
@@ -40,10 +40,10 @@ public class Main{
                 data.add(new normalizedData(point.getFeatures(), point.getLable()));
                 //System.out.println("Added:" + point + ", new:" + data.getLast());
             }
-
+            Abalone.classify();
 
         }
-        if (FILE_NAME.equals(breastCancer)){
+        if (FILE_NAME.equals(breastCancer)) {
             System.out.println("FILE BREAST CANCER");
             classification = true;
             numAtributes = 11;
@@ -57,7 +57,7 @@ public class Main{
             BreastCancer.classify();
         }
 
-        if (FILE_NAME.equals(car)){
+        if (FILE_NAME.equals(car)) {
             System.out.println("FILE CAR");
             classification = true;
             numAtributes = 6;
@@ -110,7 +110,7 @@ public class Main{
             Machine.classify();
         }
 
-        if (classification){
+        if (classification) {
             y = new double[1];
             y[0] = 1;
             e = new double[1];
@@ -130,28 +130,14 @@ public class Main{
         ArrayList<normalizedData> firstHalf = new ArrayList<>(data.subList(0, splitIndex));
         ArrayList<normalizedData> secondHalf = new ArrayList<>(data.subList(splitIndex, lastIndex));
 
-
-        // NULL MODELS
-        // Classification: Return the most common data value
-        //HouseVotes.collectData();
-
-
-        // Regression: Determine the average of each predictor class and return said average
-
-        // K-Nearest Neighbor
-        // Classification
-        // Regression
-
         //---------------------------------
         //Edited condensed nearest neigbor
         //---------------------------------
         ArrayList<normalizedData> newData = new ArrayList<>(data);
 
-        for(normalizedData point : newData){
+        for (normalizedData point : newData) {
 
         }
-
-
 
         //-------------------------------------------------------------------------------------------
         //K NEAREST NEIGHBOR WITH NEW STRUCTURE FULL OF NORMALIZED DATA
@@ -174,7 +160,7 @@ public class Main{
                 System.out.println("-----------SECOND CONFIG----------------");
             }
             //loops throught different k values
-            for (eIndex = 0; eIndex < e.length; eIndex++ ) {
+            for (eIndex = 0; eIndex < e.length; eIndex++) {
                 for (kIndex = 0; kIndex < k.length; kIndex++) { //try different k values
                     for (yIndex = 0; yIndex < y.length; yIndex++) { // try different y values
 
@@ -237,7 +223,7 @@ public class Main{
                             pointsSurveyed++;
 
                         }
-                        System.out.println("E: " + e[eIndex] +", K: " + k[kIndex] + ", Y: " + y[yIndex]);
+                        System.out.println("E: " + e[eIndex] + ", K: " + k[kIndex] + ", Y: " + y[yIndex]);
                         if (classification && (yIndex == 0)) {
                             double perCor = ((double) guessCorrect / (double) pointsSurveyed) * 100;
                             System.out.println("Percent correct: %" + perCor);
@@ -251,26 +237,10 @@ public class Main{
                 }
             }
         }
+    }
         //---------------------------------------------------------
         // END K NEAREST
         //---------------------------------------------------------
-
-
-  // Edited/Condensed K-Nearest Neighbor
-    // Classification
-    // Regression (including ∈ threshold)
-
-  // Class Determinations
-    // Classification (plurality vote)
-    // Regression (Gaussian kernal)
-    }
-
-
-
-
-
-
-
 
     private static double makeGuessRegression( double[] distances, normalizedData[] points) {
         double[] weights = new double[k[kIndex]];
