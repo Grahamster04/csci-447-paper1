@@ -1,3 +1,16 @@
-09/07
-Our goal is to make it so that we can take in any file, create a corresponding arraylist of the objects of that particular dataset, and then then split it into a training model and testing model.
-We can also probably try to get started on our null predictor since that would be kind of trivial.
+TO DO
+
+Implement the decision tree algorithm for classification trees (using gain ratio as the splitting
+criterion) and regression trees (using mean squared error as the splitting criterion)
+
+Implement reduced-error pruning (post-pruning) for both the classification trees and the regression
+trees. Note that you will not be implementing early stopping (pre-pruning) as part of this assignment.
+
+Run your decision tree implementation on each of the data sets, comparing both pruned and unpruned
+versions of the trees. These runs should be done with 5 × 2 cross-validation so you can compare your
+results statistically.
+
+You should pull out 20% of the data to be used for pruning and then use the remaining 80% for cross-
+validation. In other words, during cross-validation, train a decision tree as far as you can on the folds.
+When pruning, use the 20% that was pulled out to evaluate the node pruning choices. Once the tree
+is pruned, use the held-out fold for testing.
