@@ -3,19 +3,14 @@ import java.util.*;
 public class Main{
     // CHANGABLE ATRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/abalone.data";
+    public static final String FILE_NAME = "data/machine.data";
     public static int kIndex = 0;
     public static int yIndex = 0;
     public static int eIndex = 0;
 
-    public static int[] k = {1, 3, 5, 7, 9, 11, 13, 15};
-    //public static int[] k = {3};
-    public static double[] y = {.01, .1, 1, 2, 5, 10, 15, 20, 50};
-    //public static double[] y = {5, 10, 20, 50, 100 };
-    //public static double[] y = {20};
-    public static double[] e = {2, 3, 4, 5, 6, 7, 8, 10, 15};
-
-    static boolean edit = false;
+    public static int[] k = {1, 3, 5, 7, 9, 11, 15};
+    public static double[] y = {.01, .1, .5, 1, 2, 5, 10 };
+    public static double[] e = {.5, 1, 1.5, 2, 3, 4, 5};
     //-------------------------------------
 
     public static final String abalone = "data/abalone.data";
@@ -35,7 +30,7 @@ public class Main{
 
     public static void main(String[] args) {
         //READ FILE FROM FILE NAME
-        if (FILE_NAME.equals(abalone)){
+        if (FILE_NAME.equals(abalone)) {
             System.out.println("FILE ABALONE");
             classification = false;
             numAtributes = 9;
@@ -45,10 +40,10 @@ public class Main{
                 data.add(new normalizedData(point.getFeatures(), point.getLable()));
                 //System.out.println("Added:" + point + ", new:" + data.getLast());
             }
-
+            Abalone.classify();
 
         }
-        if (FILE_NAME.equals(breastCancer)){
+        if (FILE_NAME.equals(breastCancer)) {
             System.out.println("FILE BREAST CANCER");
             classification = true;
             numAtributes = 11;
@@ -62,7 +57,7 @@ public class Main{
             BreastCancer.classify();
         }
 
-        if (FILE_NAME.equals(car)){
+        if (FILE_NAME.equals(car)) {
             System.out.println("FILE CAR");
             classification = true;
             numAtributes = 6;
@@ -115,11 +110,11 @@ public class Main{
             Machine.classify();
         }
 
-        if (classification){
+        if (classification) {
             y = new double[1];
-            y[0] = 0;
+            y[0] = 1;
             e = new double[1];
-            e[0] = 0;
+            e[0] = 1;
 
         }
 
@@ -135,57 +130,37 @@ public class Main{
         ArrayList<normalizedData> firstHalf = new ArrayList<>(data.subList(0, splitIndex));
         ArrayList<normalizedData> secondHalf = new ArrayList<>(data.subList(splitIndex, lastIndex));
 
+        //---------------------------------
+        //Edited condensed nearest neigbor
+        //---------------------------------
+        ArrayList<normalizedData> newData = new ArrayList<>(data);
 
-        // NULL MODELS
-        // Classification: Return the most common data value
-        //HouseVotes.collectData();
+        for (normalizedData point : newData) {
 
-
-        // Regression: Determine the average of each predictor class and return said average
-
-        // K-Nearest Neighbor
-        // Classification
-        // Regression
-
-
-
-
+        }
 
         //-------------------------------------------------------------------------------------------
         //K NEAREST NEIGHBOR WITH NEW STRUCTURE FULL OF NORMALIZED DATA
         // ------------------------------------------------------------------------------------------
 
-        ArrayList<normalizedData> firstHalfEdited;
-        ArrayList<normalizedData> secondHalfEdited;
+        //loop through different epsilon values?
+        ArrayList<normalizedData> firstHalfEdited = editedTrainingData(firstHalf, e[eIndex], classification);
+        ArrayList<normalizedData> secondHalfEdited = editedTrainingData(secondHalf, e[eIndex], classification);
 
-        if(edit) {
-            firstHalfEdited = editedTrainingData(firstHalf, e[eIndex], classification);
-            secondHalfEdited = editedTrainingData(secondHalf, e[eIndex], classification);
-        }
-        else {
-            firstHalfEdited = firstHalf;
-            secondHalfEdited = secondHalf;
-            e = new double[1];
-            e[0] = 0;
-        }
         ArrayList<normalizedData> trainingData;
         ArrayList<normalizedData> testData;
         for (int dataHalfsSwaper = 0; dataHalfsSwaper < 2; dataHalfsSwaper++) { //Swaping the test and training daat
+            if (dataHalfsSwaper == 0) {
+                trainingData = firstHalfEdited;
+                testData = secondHalf;
+                System.out.println("-----------FIRST CONFIG-----------------");
+            } else {
+                trainingData = secondHalfEdited;
+                testData = firstHalf;
+                System.out.println("-----------SECOND CONFIG----------------");
+            }
             //loops throught different k values
-            for (eIndex = 0; eIndex < e.length; eIndex++ ) {
-                if(edit) {
-                    firstHalfEdited = editedTrainingData(firstHalf, e[eIndex], classification);
-                    secondHalfEdited = editedTrainingData(secondHalf, e[eIndex], classification);
-                }
-                if (dataHalfsSwaper == 0) {
-                    trainingData = firstHalfEdited;
-                    testData = secondHalf;
-                    System.out.println("-----------FIRST CONFIG-----------------");
-                } else {
-                    trainingData = secondHalfEdited;
-                    testData = firstHalf;
-                    System.out.println("-----------SECOND CONFIG----------------");
-                }
+            for (eIndex = 0; eIndex < e.length; eIndex++) {
                 for (kIndex = 0; kIndex < k.length; kIndex++) { //try different k values
                     for (yIndex = 0; yIndex < y.length; yIndex++) { // try different y values
 
@@ -248,7 +223,7 @@ public class Main{
                             pointsSurveyed++;
 
                         }
-                        System.out.println("E: " + e[eIndex] +", K: " + k[kIndex] + ", Y: " + y[yIndex]);
+                        System.out.println("E: " + e[eIndex] + ", K: " + k[kIndex] + ", Y: " + y[yIndex]);
                         if (classification && (yIndex == 0)) {
                             double perCor = ((double) guessCorrect / (double) pointsSurveyed) * 100;
                             System.out.println("Percent correct: %" + perCor);
@@ -262,26 +237,10 @@ public class Main{
                 }
             }
         }
+    }
         //---------------------------------------------------------
         // END K NEAREST
         //---------------------------------------------------------
-
-
-  // Edited/Condensed K-Nearest Neighbor
-    // Classification
-    // Regression (including ∈ threshold)
-
-  // Class Determinations
-    // Classification (plurality vote)
-    // Regression (Gaussian kernal)
-    }
-
-
-
-
-
-
-
 
     private static double makeGuessRegression( double[] distances, normalizedData[] points) {
         double[] weights = new double[k[kIndex]];

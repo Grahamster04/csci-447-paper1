@@ -19,8 +19,8 @@ public class ForestFires implements normalizedFeatures{
 
   static ArrayList<ForestFires> data = new ArrayList<>();
 
-  public int xCor; public static int xCorMax = Integer.MIN_VALUE; public static int xCorMin = Integer.MIN_VALUE;
-  public int yCor; public static int yCorMax = Integer.MIN_VALUE; public static int yCorMin = Integer.MIN_VALUE;
+  public int xCor; public static int xCorMax = Integer.MIN_VALUE; public static int xCorMin = Integer.MAX_VALUE;
+  public int yCor; public static int yCorMax = Integer.MIN_VALUE; public static int yCorMin = Integer.MAX_VALUE;
   public String month; //Review this encoding. Maybe cast to integer?
   public String day;
   public float ffmc; public static float ffmcMax = Float.NEGATIVE_INFINITY; public static float ffmcMin = Float.POSITIVE_INFINITY;

@@ -68,7 +68,7 @@ public class Machine implements normalizedFeatures{
                 encodeCACH(),
                 encodeCHMIN(),
                 encodeCHMAX(),
-                encodeERP()
+                // encodeERP()
         };
     }
 
