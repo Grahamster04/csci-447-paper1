@@ -67,8 +67,7 @@ public class Machine implements normalizedFeatures{
                 encodeMMAX(),
                 encodeCACH(),
                 encodeCHMIN(),
-                encodeCHMAX(),
-                // encodeERP()
+                encodeCHMAX()
         };
     }
 
@@ -95,6 +94,8 @@ public class Machine implements normalizedFeatures{
             averagePRP += entry.PRP;
             numUnits++;
         }
+        averagePRP = averagePRP/numUnits;
+
 
         float sumSquaredErrors = 0;
         for (Machine entry : data) {

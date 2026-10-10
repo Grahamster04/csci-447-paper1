@@ -135,6 +135,8 @@ public class Abalone implements normalizedFeatures{
       numAbalones++;
     }
 
+    averageRings = averageRings / numAbalones;
+
     float sumSquaredErrors = 0;
     for (Abalone entry : data) {
       float diff = entry.rings - averageRings;

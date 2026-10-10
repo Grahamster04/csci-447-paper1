@@ -133,6 +133,7 @@ public class ForestFires implements normalizedFeatures{
       averageArea += entry.area;
       numFires++;
     }
+    averageArea = averageArea/numFires;
 
     float sumSquaredErrors = 0;
     for (ForestFires entry : data) {
