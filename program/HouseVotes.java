@@ -122,7 +122,7 @@ public class HouseVotes implements normalizedFeatures{
     } else if (vote == 'n') {
       return 0.0;
     } else {
-      return -1.0; // Abstain / unknown
+      return 2.0; // Abstain / unknown
     }
   }
 

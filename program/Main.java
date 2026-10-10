@@ -1,3 +1,6 @@
+import com.sun.source.tree.Tree;
+
+import javax.print.DocFlavor;
 import java.sql.SQLOutput;
 import java.util.*;
 
@@ -117,7 +120,7 @@ public class Main{
             //FOR ALL OF THE FILES
 
             //RANDOMIZE DATA SET
-        //Collections.shuffle(data);
+        Collections.shuffle(data);
 
         splitIndex = (data.size()) / 2;
         lastIndex = data.size();
@@ -129,21 +132,147 @@ public class Main{
         ArrayList<normalizedData> testData = secondHalf;
 
 
-        double gainRatio;
-        for (int i = 0; i < numAtributes; i++){
-            System.out.println("Feature " + i + " gain ratio: " + calculateGainRatio(i, data));
-        }
+
+
+        ArrayList<Integer> availableFeatures = new ArrayList<>();
+        for (int i = 0; i < numAtributes; i++)
+            availableFeatures.add(i);
+        TreeNode root = buildTree(trainingData, availableFeatures);
+        printTree(root, "--");
+
+        double percentPredictionsCorrect = testAcurracy(testData, root)*100;
+        System.out.println("Accuracy: " + percentPredictionsCorrect + "%");
+        /*
+        ArrayList<normalizedData> mytestdata = new ArrayList<>();
+        mytestdata.add(new normalizedData(null, 1));
+        mytestdata.add(new normalizedData(null, 2));
+        mytestdata.add(new normalizedData(null, 2));
+        mytestdata.add(new normalizedData(null, 3));
+        mytestdata.add(new normalizedData(null, 1));
+        double b = majorityClass(mytestdata);
+        System.out.println("Majority? " + b);
+         */
+
+
 
 
 
     }
 
+    private static double testAcurracy(ArrayList<normalizedData> inputData, TreeNode root) {
+        int correct = 0;
+
+        for(normalizedData point : inputData){
+
+            double prediction = predict(point, root);
+            if(prediction == point.getTarget()){
+                correct++;
+            }
+        }
+
+        return (double)correct / inputData.size();
+    }
+
+    private static double predict(normalizedData point, TreeNode node) {
+        while(!node.isLeaf()) {
+            int featureIndex = node.getFeatureIndex();
+            double value = point.getFeatures()[featureIndex];
+            TreeNode child = node.getChildren().get(value);
+            if(child == null) {
+                return node.getPrediction();
+            }
+            node = child;
+        }
+        return node.getPrediction();
+    }
+
+
+    private static TreeNode buildTree(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures){
+        // Base Case 1
+        if(allSameClass(inputData))
+            return new TreeNode(inputData.getFirst().getTarget()); //leaf
+        // Base Case 2
+        double majorityClass = majorityClass(inputData);
+        if(availableFeatures.isEmpty())
+            return new TreeNode(majorityClass);
+
+        int bestFeature = findBestFeature(inputData, availableFeatures);
+
+        TreeNode node = new TreeNode(bestFeature, majorityClass);
+
+        HashMap<Double, ArrayList<normalizedData>> groups = splitData(bestFeature, inputData);
+
+        ArrayList<Integer> nextFeatures = new ArrayList<>(availableFeatures);
+        nextFeatures.remove(Integer.valueOf(bestFeature));
+
+        for(Double value : groups.keySet()) {
+            TreeNode child = buildTree(groups.get(value), nextFeatures);
+            node.addChild(value, child);
+        }
+
+        return node;
+    }
 
 
 
 
+    private static boolean allSameClass(ArrayList<normalizedData> inputData) {
+        double target = inputData.getFirst().getTarget();
+        for (normalizedData point : inputData){
+            if (point.getTarget() != target)
+                return false;
+        }
+        return true;
+    }
 
+    private static double majorityClass(ArrayList<normalizedData> data) {
+        HashMap<Double, Integer> votes = new HashMap<>();
+        for (normalizedData point : data){
+            double label = point.getTarget();
+            votes.put(label, votes.getOrDefault(label, 0) + 1);
+        }
+        double winner = -1;
+        int maxVotes = -1;
 
+        for (Double label : votes.keySet()) {
+
+            int count = votes.get(label);
+
+            if (count > maxVotes) {
+                maxVotes = count;
+                winner = label;
+            }
+        }
+
+        return winner;
+
+    }
+
+    private static int findBestFeature(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures) {
+        int bestFeature = -1;
+        double bestGain = -1;
+        for (int feature : availableFeatures){
+            double gain = calculateInfoGain(feature, inputData);
+            if (gain>bestGain) {
+                bestGain = gain;
+                bestFeature = feature;
+            }
+        }
+        return bestFeature;
+    }
+
+    private static double calculateInfoGain(int row, ArrayList<normalizedData> inputData){
+            double parentEntropy = calculateEntropy(inputData);
+
+            HashMap<Double, ArrayList<normalizedData>> groups = splitData(row, inputData);
+
+            double childEntropy = 0;
+            for (ArrayList<normalizedData> subset : groups.values()){
+                double weight = (double) subset.size() / data.size();
+                childEntropy += weight * calculateEntropy(subset);
+            }
+        return parentEntropy-childEntropy;
+    }
 
     private static double calculateEntropy(ArrayList<normalizedData> inputdata){
         HashMap<Double, Integer> counts = new HashMap<>();
@@ -162,18 +291,6 @@ public class Main{
         return entropy;
     }
 
-    private static double calculateInfoGain(int row, ArrayList<normalizedData> inputData){
-            double parentEntropy = calculateEntropy(inputData);
-
-            HashMap<Double, ArrayList<normalizedData>> groups = splitData(row, inputData);
-
-            double childEntropy = 0;
-            for (ArrayList<normalizedData> subset : groups.values()){
-                double weight = (double) subset.size() / data.size();
-                childEntropy += weight * calculateEntropy(subset);
-            }
-        return parentEntropy-childEntropy;
-    }
     private static HashMap<Double, ArrayList<normalizedData>> splitData(int featureIndex, ArrayList<normalizedData> inputData){
         HashMap<Double,ArrayList<normalizedData>> groups = new HashMap<>();
 
@@ -203,6 +320,21 @@ public class Main{
         double gain = calculateInfoGain(featureIndex, data);
         double iv = calculateIntrinsicValue(featureIndex, data);
         return gain / iv;
+    }
+
+    private static void printTree(TreeNode node, String indent) {
+
+        if(node.isLeaf()) {
+            System.out.println(indent + "Predict: " + node.getPrediction());
+            return;
+        }
+
+        System.out.println(indent + "Feature " + node.getFeatureIndex());
+
+        for(Double value : node.getChildren().keySet()) {
+            System.out.println(indent + " ├─ Value " + value);
+            printTree(node.getChildren().get(value), indent + " │   ");
+        }
     }
 
 
