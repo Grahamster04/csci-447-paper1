@@ -1,13 +1,9 @@
-import com.sun.source.tree.Tree;
-
-import javax.print.DocFlavor;
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class Main{
     // CHANGABLE ATRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/house-votes-84.data";
+    public static final String FILE_NAME = "data/breast-cancer-wisconsin.data";
 
     //-------------------------------------
 
@@ -47,7 +43,7 @@ public class Main{
             if (FILE_NAME.equals(breastCancer)) {
                 System.out.println("FILE BREAST CANCER");
                 classification = true;
-                numAtributes = 11;
+                numAtributes = 9;
                 boolean[] breastCancerNumericAtributes = new boolean[]{true, true, true, true, true, true, true, true, true, true, true};
                 BreastCancer.collectData();
 
@@ -138,10 +134,13 @@ public class Main{
         for (int i = 0; i < numAtributes; i++)
             availableFeatures.add(i);
         TreeNode root = buildTree(trainingData, availableFeatures);
-        printTree(root, "--");
+        //printTree(root, "--");
 
-        double percentPredictionsCorrect = testAcurracy(testData, root)*100;
+
+        double percentPredictionsCorrect = testAcurracy(testData, root);
+        double normalPredictionsCorrect = testAcurracy(trainingData, root);
         System.out.println("Accuracy: " + percentPredictionsCorrect + "%");
+        System.out.println("Accuracy: " + normalPredictionsCorrect + "%");
         /*
         ArrayList<normalizedData> mytestdata = new ArrayList<>();
         mytestdata.add(new normalizedData(null, 1));
@@ -159,6 +158,47 @@ public class Main{
 
     }
 
+
+    private static TreeNode buildTree(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures){
+        // Base Case 1
+        if(allSameClass(inputData))
+            return new TreeNode(inputData.getFirst().getTarget()); //leaf
+        // Base Case 2
+        double majorityClass = majorityClass(inputData);
+        if(availableFeatures.isEmpty())
+            return new TreeNode(majorityClass);
+
+        SplitResult bestFeature = findBestFeature(inputData, availableFeatures);
+
+
+
+
+        TreeNode node = new TreeNode(bestFeature.featureIndex, majorityClass, bestFeature.threshold, bestFeature.numeric);
+
+
+        HashMap<Double, ArrayList<normalizedData>> groups = new HashMap<>();
+
+        if (bestFeature.numeric){
+            groups = splitDataNumeric(bestFeature.featureIndex,bestFeature.threshold, inputData);
+        }
+        else {
+            groups = splitData(bestFeature.featureIndex, inputData);
+        }
+
+        ArrayList<Integer> nextFeatures = new ArrayList<>(availableFeatures);
+        if(!bestFeature.numeric)
+            nextFeatures.remove(Integer.valueOf(bestFeature.featureIndex));
+
+        for(Double value : groups.keySet()) {
+            if(groups.get(value).isEmpty())
+                continue;
+            TreeNode child = buildTree(groups.get(value), nextFeatures);
+            node.addChild(value, child);
+        }
+
+        return node;
+    }
+
     private static double testAcurracy(ArrayList<normalizedData> inputData, TreeNode root) {
         int correct = 0;
 
@@ -174,47 +214,33 @@ public class Main{
     }
 
     private static double predict(normalizedData point, TreeNode node) {
+
+
         while(!node.isLeaf()) {
             int featureIndex = node.getFeatureIndex();
             double value = point.getFeatures()[featureIndex];
-            TreeNode child = node.getChildren().get(value);
-            if(child == null) {
-                return node.getPrediction();
+
+            if(node.isNumeric()) {
+                if(value <= node.getSplitThreshold()){
+                    //System.out.println("Going LEFT");
+                    node = node.getChild(0.0);
+                }
+                else{
+                    node = node.getChild(1.0);
+                    //System.out.println("Going LEFT");
+                }
+
             }
-            node = child;
+            else {
+                TreeNode child = node.getChildren().get(value);
+                if (child == null) {
+                    return node.getPrediction();
+                }
+                node = child;
+            }
         }
         return node.getPrediction();
     }
-
-
-    private static TreeNode buildTree(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures){
-        // Base Case 1
-        if(allSameClass(inputData))
-            return new TreeNode(inputData.getFirst().getTarget()); //leaf
-        // Base Case 2
-        double majorityClass = majorityClass(inputData);
-        if(availableFeatures.isEmpty())
-            return new TreeNode(majorityClass);
-
-        int bestFeature = findBestFeature(inputData, availableFeatures);
-
-        TreeNode node = new TreeNode(bestFeature, majorityClass);
-
-        HashMap<Double, ArrayList<normalizedData>> groups = splitData(bestFeature, inputData);
-
-        ArrayList<Integer> nextFeatures = new ArrayList<>(availableFeatures);
-        nextFeatures.remove(Integer.valueOf(bestFeature));
-
-        for(Double value : groups.keySet()) {
-            TreeNode child = buildTree(groups.get(value), nextFeatures);
-            node.addChild(value, child);
-        }
-
-        return node;
-    }
-
-
-
 
     private static boolean allSameClass(ArrayList<normalizedData> inputData) {
         double target = inputData.getFirst().getTarget();
@@ -248,18 +274,48 @@ public class Main{
 
     }
 
-    private static int findBestFeature(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures) {
-        int bestFeature = -1;
-        double bestGain = -1;
+    private static SplitResult findBestFeature(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures) {
+        SplitResult bestFeature = new SplitResult();
+        double bestGainRatio = -1;
+
+
         for (int feature : availableFeatures){
-            double gain = calculateInfoGain(feature, inputData);
-            if (gain>bestGain) {
-                bestGain = gain;
-                bestFeature = feature;
+            if (normalizedData.getIsFeatureNumeric(feature)){
+                double bestGainForThresholds = -1;
+                double bestThreshold = -1;
+
+                ArrayList<Double> thresholds = getCandidateThresholds(feature, inputData);
+                for(double threshold : thresholds) {
+                    double gainRatio = calculateGainRatioNumeric(feature, threshold, inputData);
+                    if (gainRatio>bestGainForThresholds){
+                        bestGainForThresholds = gainRatio;
+                        bestThreshold = threshold;
+                    }
+                }
+                if (bestGainForThresholds> bestGainRatio){
+                    bestGainRatio = bestGainForThresholds;
+                    bestFeature.featureIndex = feature;
+                    bestFeature.gainRatio = bestGainForThresholds;
+                    bestFeature.threshold = bestThreshold;
+                    bestFeature.numeric = true;
+                }
+            }
+            else {
+                double gainRatio = calculateGainRatio(feature, inputData);
+                if (gainRatio > bestGainRatio) {
+                    bestGainRatio = gainRatio;
+                    bestFeature.featureIndex = feature;
+                    bestFeature.gainRatio = gainRatio;
+                    bestFeature.numeric = false;
+                    bestFeature.threshold = -1;
+                }
             }
         }
+
         return bestFeature;
     }
+
+
 
     private static double calculateInfoGain(int row, ArrayList<normalizedData> inputData){
             double parentEntropy = calculateEntropy(inputData);
@@ -268,9 +324,21 @@ public class Main{
 
             double childEntropy = 0;
             for (ArrayList<normalizedData> subset : groups.values()){
-                double weight = (double) subset.size() / data.size();
+                double weight = (double) subset.size() / inputData.size();
                 childEntropy += weight * calculateEntropy(subset);
             }
+        return parentEntropy-childEntropy;
+    }
+    private static double calculateInfoGainNumeric(int row, double threshold, ArrayList<normalizedData> inputData){
+        double parentEntropy = calculateEntropy(inputData);
+
+        HashMap<Double, ArrayList<normalizedData>> groups = splitDataNumeric(row, threshold, inputData);
+
+        double childEntropy = 0;
+        for (ArrayList<normalizedData> subset : groups.values()){
+            double weight = (double) subset.size() / inputData.size();
+            childEntropy += weight * calculateEntropy(subset);
+        }
         return parentEntropy-childEntropy;
     }
 
@@ -302,24 +370,85 @@ public class Main{
 
         return groups;
     }
+    private static HashMap<Double, ArrayList<normalizedData>> splitDataNumeric(int featureIndex, double threshold, ArrayList<normalizedData> inputData){
+        HashMap<Double,ArrayList<normalizedData>> groups = new HashMap<>();
 
-    private static double calculateIntrinsicValue(int featureIndex, ArrayList<normalizedData> data){
-        HashMap<Double, ArrayList<normalizedData>> groups = splitData(featureIndex, data);
+        for(normalizedData point : inputData) {
+            double value = point.getFeatures()[featureIndex];
+            if (value <= threshold) {
+                groups.putIfAbsent(0.0, new ArrayList<>());
+                groups.get(0.0).add(point);
+            }
+            else{
+                groups.putIfAbsent(1.0, new ArrayList<>());
+                groups.get(1.0).add(point);
+            }
+        }
+        //System.out.println("Feature " + featureIndex +" Threshold " + threshold +" Left=" + groups.get(0.0).size() +" Right=" + groups.get(1.0).size());
+
+        return groups;
+    }
+
+    private static double calculateIntrinsicValue(int featureIndex, ArrayList<normalizedData> inputData){
+        HashMap<Double, ArrayList<normalizedData>> groups = splitData(featureIndex, inputData);
 
         double iv = 0;
 
         for(ArrayList<normalizedData> subset : groups.values()) {
-            double p = (double) subset.size() / data.size();
+            double p = (double) subset.size() / inputData.size();
             iv -= p * (Math.log(p) / Math.log(2));
         }
 
         return iv;
     }
-    private static double calculateGainRatio(int featureIndex, ArrayList<normalizedData> data)
-    {
-        double gain = calculateInfoGain(featureIndex, data);
-        double iv = calculateIntrinsicValue(featureIndex, data);
+    private static double calculateIntrinsicValueNumeric(int featureIndex, double threshold, ArrayList<normalizedData> inputData){
+        HashMap<Double, ArrayList<normalizedData>> groups = splitDataNumeric(featureIndex,threshold, inputData);
+
+        double iv = 0;
+
+        for(ArrayList<normalizedData> subset : groups.values()) {
+            double p = (double) subset.size() / inputData.size();
+            iv -= p * (Math.log(p) / Math.log(2));
+        }
+
+        return iv;
+    }
+
+    private static double calculateGainRatio(int featureIndex, ArrayList<normalizedData> inputData) {
+        double gain = calculateInfoGain(featureIndex, inputData);
+        double iv = calculateIntrinsicValue(featureIndex, inputData);
         return gain / iv;
+    }
+    private static double calculateGainRatioNumeric(int featureIndex, double threshold, ArrayList<normalizedData> inputData) {
+        double gain = calculateInfoGainNumeric(featureIndex, threshold, inputData);
+        double iv = calculateIntrinsicValueNumeric(featureIndex, threshold, inputData);
+
+        return gain / iv;
+    }
+
+    private static ArrayList<Double> getCandidateThresholds(int featureIndex, ArrayList<normalizedData> inputData) {
+        if(inputData.isEmpty())
+            return new ArrayList<>();
+
+        ArrayList<Double> values = new ArrayList<>();
+
+        for(normalizedData point : inputData) {
+            values.add(point.getFeatures()[featureIndex]);
+        }
+
+        Collections.sort(values);
+        ArrayList<Double> thresholds = new ArrayList<>();
+
+        for(int i = 0; i < values.size() - 1; i++) {
+            double current = values.get(i);
+            double next = values.get(i + 1);
+            if(current != next) {
+                double midpoint = (current + next) / 2.0;
+                thresholds.add(midpoint);
+            }
+        }
+
+        return thresholds;
     }
 
     private static void printTree(TreeNode node, String indent) {

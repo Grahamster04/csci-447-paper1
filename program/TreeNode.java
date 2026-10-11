@@ -6,11 +6,17 @@ public class TreeNode {
     private double prediction;
     private boolean isLeaf;
 
+    private boolean isNumeric;
+    private double splitThreshold;
+
+
     private HashMap<Double, TreeNode> children; // and based on what you are for catagory 3, you go into a child node, Ie 1,2, or 3
 
-    public TreeNode(int fi, double p){
+    public TreeNode(int fi, double p, double st, boolean n){
         featureIndex = fi;
         prediction = p;
+        splitThreshold = st;
+        isNumeric = n;
         children = new HashMap<>();
     }
     public TreeNode(double p) {
@@ -32,6 +38,12 @@ public class TreeNode {
         return isLeaf;
     }
 
+    public boolean isNumeric() {
+        return isNumeric;
+    }
+    public double getSplitThreshold() {
+        return splitThreshold;
+    }
     public double getPrediction() {
         return prediction;
     }
