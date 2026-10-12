@@ -3,7 +3,7 @@ import java.util.*;
 public class Main{
     // CHANGABLE ATRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/breast-cancer-wisconsin.data";
+    public static final String FILE_NAME = "data/car.data";
 
     //-------------------------------------
 
@@ -55,11 +55,11 @@ public class Main{
                 BreastCancer.classify();
                 normalizedData.setIsFeatureNumeric(breastCancerNumericAtributes);
             }
-
             if (FILE_NAME.equals(car)) {
                 System.out.println("FILE CAR");
                 classification = true;
                 numAtributes = 6;
+                boolean[] carNumericAtributes = new boolean[]{false, false, false, false, false, false};
                 Car.collectData();
 
                 for (int i = 0; i < Car.data.size(); i++) {
@@ -68,6 +68,7 @@ public class Main{
                     //System.out.println("Added:" + point + ", new:" + data.getLast());
                 }
                 Car.classify();
+                normalizedData.setIsFeatureNumeric(carNumericAtributes);
             }
             if (FILE_NAME.equals(fires)) {
                 System.out.println("FILE FOREST FIRES");
@@ -140,7 +141,6 @@ public class Main{
         double percentPredictionsCorrect = testAcurracy(testData, root);
         double normalPredictionsCorrect = testAcurracy(trainingData, root);
         System.out.println("Accuracy: " + percentPredictionsCorrect + "%");
-        System.out.println("Accuracy: " + normalPredictionsCorrect + "%");
         /*
         ArrayList<normalizedData> mytestdata = new ArrayList<>();
         mytestdata.add(new normalizedData(null, 1));
