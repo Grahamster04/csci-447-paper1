@@ -3,7 +3,7 @@ import java.util.*;
 public class Main {
     // CHANGEABLE ATTRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/machine.data";
+    public static final String FILE_NAME = "data/car.data";
     //-------------------------------------
 
     public static final String abalone = "data/abalone.data";
@@ -145,26 +145,28 @@ public class Main {
 
         //printTree(root, "--");
 
+        int nodeCount = countNodes(root);
+
         if (classification) {
             double percentPredictionsCorrect = testAcurracy(testData, root);
-            System.out.println("Accuracy: " + (percentPredictionsCorrect * 100) + "%");
+            System.out.println("Accuracy: " + (percentPredictionsCorrect * 100) + "%, Nodes: " + nodeCount);
+
+            pruneTree(root, pruningData);
+
+            percentPredictionsCorrect = testAcurracy(testData, root);
+            nodeCount = countNodes(root);
+            System.out.println("Pruned:");
+            System.out.println("Accuracy: " + (percentPredictionsCorrect * 100) + "%, Nodes: " + nodeCount);
         } else {
             double rmse = testRegressionError(testData, root);
-            System.out.println("RMSE: " + rmse);
+            System.out.println("RMSE: " + rmse + ", Nodes: " + nodeCount);
+
+            pruneTree(root, pruningData);
+
+            rmse = testRegressionError(testData, root);
+            nodeCount = countNodes(root);
+            System.out.println("Pruned:\nRMSE: " + rmse + ", Nodes: " + nodeCount);
         }
-
-
-        double percentPredictionsCorrect = testAcurracy(testData, root);
-        int nodeCount = countNodes(root);
-        System.out.println("Accuracy: " + percentPredictionsCorrect*100 + "%, Nodes: " + nodeCount);
-
-        pruneTree(root, pruningData);
-
-        percentPredictionsCorrect = testAcurracy(testData, root);
-        nodeCount = countNodes(root);
-        System.out.println("Pruned:");
-        System.out.println("Accuracy: " + percentPredictionsCorrect*100 + "%, Nodes: " + nodeCount);
-
 
         /*
         ArrayList<normalizedData> mytestdata = new ArrayList<>();
@@ -492,51 +494,57 @@ public class Main {
         if(node.isLeaf())
             return;
 
-        // recurse into children first
-        // Go downward first
-        for(TreeNode child :
-                node.getChildren().values())
-        {
-            pruneNode(child,
-                    pruningData,
-                    root);
+        // Recurse downward first
+        for(TreeNode child : node.getChildren().values()) {
+            pruneNode(child, pruningData, root);
         }
-        // try pruning this node
 
-        //old stuff saved
-        double originalAccuracy = testAcurracy(pruningData, root);
+        // Save old state
         HashMap<Double, TreeNode> oldChildren = new HashMap<>(node.getChildren());
         boolean oldIsLeaf = node.isLeaf();
 
-        //prune node
-        node.setLeaf(true);
-        node.clearChildren();
+        if (classification) {
+            double originalAccuracy = testAcurracy(pruningData, root);
 
-        //find acurracy
-        double prunedAcurracy = testAcurracy(pruningData, root);
+            // Prune node
+            node.setLeaf(true);
+            node.clearChildren();
 
+            double prunedAccuracy = testAcurracy(pruningData, root);
 
-        if(prunedAcurracy < originalAccuracy) {
+            // Revert if accuracy drops
+            if(prunedAccuracy < originalAccuracy) {
+                node.setLeaf(oldIsLeaf);
+                node.setChildren(oldChildren);
+            }
+        } else {
+            double originalRmse = testRegressionError(pruningData, root);
 
-            node.setLeaf(oldIsLeaf);
-            node.setChildren(oldChildren);
+            // Prune node
+            node.setLeaf(true);
+            node.clearChildren();
+
+            double prunedRmse = testRegressionError(pruningData, root);
+
+            // Revert if RMSE increases (since lower error is better)
+            if(prunedRmse > originalRmse) {
+                node.setLeaf(oldIsLeaf);
+                node.setChildren(oldChildren);
+            }
         }
-
-
-
     }
 
-    private static int countNodes(TreeNode root){
-        if(root.isLeaf())
+    private static int countNodes(TreeNode root) {
+        if (root.isLeaf())
             return 1;
 
         int nodes = 1;
 
-        for(TreeNode child : root.getChildren().values()) {
+        for (TreeNode child : root.getChildren().values()) {
             nodes += countNodes(child);
         }
-
         return nodes;
+    }
     private static double meanTarget(ArrayList<normalizedData> inputData) {
         if (inputData.isEmpty()) return 0.0;
         double sum = 0;
