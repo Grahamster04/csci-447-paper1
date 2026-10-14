@@ -1,10 +1,9 @@
 import java.util.*;
 
-public class Main{
-    // CHANGABLE ATRIBUTES Depending
+public class Main {
+    // CHANGEABLE ATTRIBUTES Depending
     //-------------------------------------
     public static final String FILE_NAME = "data/car.data";
-
     //-------------------------------------
 
     public static final String abalone = "data/abalone.data";
@@ -25,56 +24,56 @@ public class Main{
 
     public static void main(String[] args) {
         //READ FILE FROM FILE NAME
-
-            if (FILE_NAME.equals(abalone)) {
-                System.out.println("FILE ABALONE");
-                classification = false;
-                numAtributes = 9;
-                //isNumericAtribute = new boolean[]{false, true, true, true, true, true, true, true, true};
-                Abalone.collectData();
-                for (int i = 0; i < Abalone.data.size(); i++) {
-                    Abalone point = Abalone.data.get(i);
-                    data.add(new normalizedData(point.getFeatures(), point.getLable()));
-                    //System.out.println("Added:" + point + ", new:" + data.getLast());
-                }
-                Abalone.classify();
-
-
+        if (FILE_NAME.equals(abalone)) {
+            System.out.println("FILE ABALONE");
+            classification = false;
+            numAtributes = 8;
+            boolean[] abaloneNumericAttributes = new boolean[]{false, true, true, true, true, true, true, true, true}; //[cite: 1]
+            Abalone.collectData();
+            for (int i = 0; i < Abalone.data.size(); i++) {
+                Abalone point = Abalone.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
             }
-            if (FILE_NAME.equals(breastCancer)) {
-                System.out.println("FILE BREAST CANCER");
-                classification = true;
-                numAtributes = 9;
-                boolean[] breastCancerNumericAtributes = new boolean[]{true, true, true, true, true, true, true, true, true, true, true};
-                BreastCancer.collectData();
+            Abalone.classify();
+            normalizedData.setIsFeatureNumeric(abaloneNumericAttributes);
+        }
 
-                for (int i = 0; i < BreastCancer.data.size(); i++) {
-                    BreastCancer point = BreastCancer.data.get(i);
-                    data.add(new normalizedData(point.getFeatures(), point.getLable()));
-                    //System.out.println("Added:" + point + ", new:" + data.getLast());
-                }
-                BreastCancer.classify();
-                normalizedData.setIsFeatureNumeric(breastCancerNumericAtributes);
-            }
-            if (FILE_NAME.equals(car)) {
-                System.out.println("FILE CAR");
-                classification = true;
-                numAtributes = 6;
-                boolean[] carNumericAtributes = new boolean[]{false, false, false, false, false, false};
-                Car.collectData();
+        if (FILE_NAME.equals(breastCancer)) {
+            System.out.println("FILE BREAST CANCER");
+            classification = true;
+            numAtributes = 9;
+            boolean[] breastCancerNumericAtributes = new boolean[]{true, true, true, true, true, true, true, true, true, true, true};
+            BreastCancer.collectData();
 
-                for (int i = 0; i < Car.data.size(); i++) {
-                    Car point = Car.data.get(i);
-                    data.add(new normalizedData(point.getFeatures(), point.getLable()));
-                    //System.out.println("Added:" + point + ", new:" + data.getLast());
-                }
-                Car.classify();
-                normalizedData.setIsFeatureNumeric(carNumericAtributes);
+            for (int i = 0; i < BreastCancer.data.size(); i++) {
+                BreastCancer point = BreastCancer.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
+                //System.out.println("Added:" + point + ", new:" + data.getLast());
             }
+            BreastCancer.classify();
+            normalizedData.setIsFeatureNumeric(breastCancerNumericAtributes);
+        }
+
+        if (FILE_NAME.equals(car)) {
+            System.out.println("FILE CAR");
+            classification = true;
+            numAtributes = 6;
+            boolean[] carNumericAtributes = new boolean[]{false, false, false, false, false, false};
+            Car.collectData();
+            for (int i = 0; i < Car.data.size(); i++) {
+                Car point = Car.data.get(i);
+                data.add(new normalizedData(point.getFeatures(), point.getLable()));
+                //System.out.println("Added:" + point + ", new:" + data.getLast());
+            }
+            Car.classify();
+            normalizedData.setIsFeatureNumeric(carNumericAtributes);
+        }
+
             if (FILE_NAME.equals(fires)) {
                 System.out.println("FILE FOREST FIRES");
                 classification = false;
-                numAtributes = 13;
+                numAtributes = 10;
+                boolean[] forestNumericAtributes = new boolean[]{false, false, false, false, false, false, false, false, false, false};
                 ForestFires.collectData();
 
                 for (int i = 0; i < ForestFires.data.size(); i++) {
@@ -83,7 +82,9 @@ public class Main{
                     //System.out.println("Added:" + point + ", new:" + data.getLast());
                 }
                 ForestFires.classify();
+                normalizedData.setIsFeatureNumeric(forestNumericAtributes);
             }
+
             if (FILE_NAME.equals(houseVotes)) {
                 System.out.println("FILE HOUSE VOTES");
                 classification = true;
@@ -99,11 +100,13 @@ public class Main{
                 HouseVotes.classify();
                 normalizedData.setIsFeatureNumeric(breastCancerNumericAtributes);
             }
+
             if (FILE_NAME.equals(machine)) {
                 System.out.println("FILE MACHINE");
                 classification = false;
-                numAtributes = 10;
+                numAtributes = 6;
                 Machine.collectData();
+                boolean[] machineNumericAttributes = new boolean[]{false, false, false, false, false, false}; // <-- LENGTH 6
 
                 for (int i = 0; i < Machine.data.size(); i++) {
                     Machine point = Machine.data.get(i);
@@ -111,6 +114,7 @@ public class Main{
                     //System.out.println("Added:" + point + ", new:" + data.getLast());
                 }
                 Machine.classify();
+                normalizedData.setIsFeatureNumeric(machineNumericAttributes);
             }
 
 
@@ -132,8 +136,6 @@ public class Main{
 
 
 
-
-
         ArrayList<Integer> availableFeatures = new ArrayList<>();
         for (int i = 0; i < numAtributes; i++)
             availableFeatures.add(i);
@@ -143,18 +145,28 @@ public class Main{
 
         //printTree(root, "--");
 
-
-        double percentPredictionsCorrect = testAcurracy(testData, root);
         int nodeCount = countNodes(root);
-        System.out.println("Accuracy: " + percentPredictionsCorrect*100 + "%, Nodes: " + nodeCount);
 
-        pruneTree(root, pruningData);
+        if (classification) {
+            double percentPredictionsCorrect = testAcurracy(testData, root);
+            System.out.println("Accuracy: " + (percentPredictionsCorrect * 100) + "%, Nodes: " + nodeCount);
 
-        percentPredictionsCorrect = testAcurracy(testData, root);
-        nodeCount = countNodes(root);
-        System.out.println("Pruned:");
-        System.out.println("Accuracy: " + percentPredictionsCorrect*100 + "%, Nodes: " + nodeCount);
+            pruneTree(root, pruningData);
 
+            percentPredictionsCorrect = testAcurracy(testData, root);
+            nodeCount = countNodes(root);
+            System.out.println("Pruned:");
+            System.out.println("Accuracy: " + (percentPredictionsCorrect * 100) + "%, Nodes: " + nodeCount);
+        } else {
+            double rmse = testRegressionError(testData, root);
+            System.out.println("RMSE: " + rmse + ", Nodes: " + nodeCount);
+
+            pruneTree(root, pruningData);
+
+            rmse = testRegressionError(testData, root);
+            nodeCount = countNodes(root);
+            System.out.println("Pruned:\nRMSE: " + rmse + ", Nodes: " + nodeCount);
+        }
 
         /*
         ArrayList<normalizedData> mytestdata = new ArrayList<>();
@@ -166,37 +178,30 @@ public class Main{
         double b = majorityClass(mytestdata);
         System.out.println("Majority? " + b);
          */
-
-
-
-
-
     }
 
 
     private static TreeNode buildTree(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures){
-        // Base Case 1
-        if(allSameClass(inputData))
-            return new TreeNode(inputData.getFirst().getTarget()); //leaf
-        // Base Case 2
-        double majorityClass = majorityClass(inputData);
-        if(availableFeatures.isEmpty())
-            return new TreeNode(majorityClass);
+        // Base Case 1: All samples have the same target value
+        if(allSameTarget(inputData))
+            return new TreeNode(inputData.getFirst().getTarget()); // leaf
 
-        SplitResult bestFeature = findBestFeature(inputData, availableFeatures);
+        double defaultPrediction = classification ? majorityClass(inputData) : meanTarget(inputData);
 
+        // Base Case 2: No features left
+        if(availableFeatures.isEmpty() || inputData.isEmpty())
+            return new TreeNode(defaultPrediction);
 
+        SplitResult bestFeature = classification ?
+                findBestFeatureClassification(inputData, availableFeatures) :
+                findBestFeatureRegression(inputData, availableFeatures);
 
+        TreeNode node = new TreeNode(bestFeature.featureIndex, defaultPrediction, bestFeature.threshold, bestFeature.numeric);
 
-        TreeNode node = new TreeNode(bestFeature.featureIndex, majorityClass, bestFeature.threshold, bestFeature.numeric);
-
-
-        HashMap<Double, ArrayList<normalizedData>> groups = new HashMap<>();
-
+        HashMap<Double, ArrayList<normalizedData>> groups;
         if (bestFeature.numeric){
-            groups = splitDataNumeric(bestFeature.featureIndex,bestFeature.threshold, inputData);
-        }
-        else {
+            groups = splitDataNumeric(bestFeature.featureIndex, bestFeature.threshold, inputData);
+        } else {
             groups = splitData(bestFeature.featureIndex, inputData);
         }
 
@@ -257,7 +262,7 @@ public class Main{
         return node.getPrediction();
     }
 
-    private static boolean allSameClass(ArrayList<normalizedData> inputData) {
+    private static boolean allSameTarget(ArrayList<normalizedData> inputData) {
         double target = inputData.getFirst().getTarget();
         for (normalizedData point : inputData){
             if (point.getTarget() != target)
@@ -289,7 +294,7 @@ public class Main{
 
     }
 
-    private static SplitResult findBestFeature(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures) {
+    private static SplitResult findBestFeatureClassification(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures) {
         SplitResult bestFeature = new SplitResult();
         double bestGainRatio = -1;
 
@@ -489,50 +494,143 @@ public class Main{
         if(node.isLeaf())
             return;
 
-        // recurse into children first
-        // Go downward first
-        for(TreeNode child :
-                node.getChildren().values())
-        {
-            pruneNode(child,
-                    pruningData,
-                    root);
+        // Recurse downward first
+        for(TreeNode child : node.getChildren().values()) {
+            pruneNode(child, pruningData, root);
         }
-        // try pruning this node
 
-        //old stuff saved
-        double originalAccuracy = testAcurracy(pruningData, root);
+        // Save old state
         HashMap<Double, TreeNode> oldChildren = new HashMap<>(node.getChildren());
         boolean oldIsLeaf = node.isLeaf();
 
-        //prune node
-        node.setLeaf(true);
-        node.clearChildren();
+        if (classification) {
+            double originalAccuracy = testAcurracy(pruningData, root);
 
-        //find acurracy
-        double prunedAcurracy = testAcurracy(pruningData, root);
+            // Prune node
+            node.setLeaf(true);
+            node.clearChildren();
 
+            double prunedAccuracy = testAcurracy(pruningData, root);
 
-        if(prunedAcurracy < originalAccuracy) {
+            // Revert if accuracy drops
+            if(prunedAccuracy < originalAccuracy) {
+                node.setLeaf(oldIsLeaf);
+                node.setChildren(oldChildren);
+            }
+        } else {
+            double originalRmse = testRegressionError(pruningData, root);
 
-            node.setLeaf(oldIsLeaf);
-            node.setChildren(oldChildren);
+            // Prune node
+            node.setLeaf(true);
+            node.clearChildren();
+
+            double prunedRmse = testRegressionError(pruningData, root);
+
+            // Revert if RMSE increases (since lower error is better)
+            if(prunedRmse > originalRmse) {
+                node.setLeaf(oldIsLeaf);
+                node.setChildren(oldChildren);
+            }
         }
-
-
-
     }
 
-    private static int countNodes(TreeNode root){
-        if(root.isLeaf())
+    private static int countNodes(TreeNode root) {
+        if (root.isLeaf())
             return 1;
 
         int nodes = 1;
 
-        for(TreeNode child : root.getChildren().values()) {
+        for (TreeNode child : root.getChildren().values()) {
             nodes += countNodes(child);
         }
-
         return nodes;
+    }
+    private static double meanTarget(ArrayList<normalizedData> inputData) {
+        if (inputData.isEmpty()) return 0.0;
+        double sum = 0;
+        for (normalizedData point : inputData) {
+            sum += point.getTarget();
+        }
+        return sum / inputData.size();
+    }
+
+    private static SplitResult findBestFeatureRegression(ArrayList<normalizedData> inputData, ArrayList<Integer> availableFeatures) {
+        SplitResult bestFeature = new SplitResult();
+        double minMSE = Double.MAX_VALUE;
+
+        for (int feature : availableFeatures){
+            if (normalizedData.getIsFeatureNumeric(feature)){
+                double bestMSEForThresholds = Double.MAX_VALUE;
+                double bestThreshold = -1;
+
+                ArrayList<Double> thresholds = getCandidateThresholds(feature, inputData);
+                for(double threshold : thresholds) {
+                    double mse = calculateMSENumeric(feature, threshold, inputData);
+                    if (mse < bestMSEForThresholds){
+                        bestMSEForThresholds = mse;
+                        bestThreshold = threshold;
+                    }
+                }
+                if (bestMSEForThresholds < minMSE){
+                    minMSE = bestMSEForThresholds;
+                    bestFeature.featureIndex = feature;
+                    bestFeature.gainRatio = bestMSEForThresholds;
+                    bestFeature.threshold = bestThreshold;
+                    bestFeature.numeric = true;
+                }
+            } else {
+                double mse = calculateMSE(feature, inputData);
+                if (mse < minMSE) {
+                    minMSE = mse;
+                    bestFeature.featureIndex = feature;
+                    bestFeature.gainRatio = mse;
+                    bestFeature.numeric = false;
+                    bestFeature.threshold = -1;
+                }
+            }
+        }
+        return bestFeature;
+    }
+
+    private static double calculateMSE(int featureIndex, ArrayList<normalizedData> inputData){
+        HashMap<Double, ArrayList<normalizedData>> groups = splitData(featureIndex, inputData);
+        double totalSquaredError = 0;
+
+        for (ArrayList<normalizedData> subset : groups.values()){
+            if (subset.isEmpty()) continue;
+            double subsetMean = meanTarget(subset);
+            for (normalizedData point : subset) {
+                double diff = point.getTarget() - subsetMean;
+                totalSquaredError += diff * diff;
+            }
+        }
+        return totalSquaredError / inputData.size();
+    }
+
+    private static double calculateMSENumeric(int featureIndex, double threshold, ArrayList<normalizedData> inputData){
+        HashMap<Double, ArrayList<normalizedData>> groups = splitDataNumeric(featureIndex, threshold, inputData);
+        double totalSquaredError = 0;
+
+        for (ArrayList<normalizedData> subset : groups.values()){
+            if (subset.isEmpty()) continue;
+            double subsetMean = meanTarget(subset);
+            for (normalizedData point : subset) {
+                double diff = point.getTarget() - subsetMean;
+                totalSquaredError += diff * diff;
+            }
+        }
+        return totalSquaredError / inputData.size();
+    }
+
+    private static double testRegressionError(ArrayList<normalizedData> inputData, TreeNode root) {
+        double totalSquaredError = 0;
+
+        for (normalizedData point : inputData) {
+            double prediction = predict(point, root);
+            double diff = prediction - point.getTarget();
+            totalSquaredError += diff * diff;
+        }
+
+        return Math.sqrt(totalSquaredError / inputData.size()); // RMSE
     }
 }
