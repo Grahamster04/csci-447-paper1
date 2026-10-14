@@ -58,4 +58,15 @@ public class TreeNode {
     public HashMap<Double, TreeNode> getChildren() {
         return children;
     }
+    public void setLeaf(boolean leaf){
+        isLeaf = leaf;
+    }
+
+    public void clearChildren(){
+        children.clear();
+    }
+
+    public void setChildren(HashMap<Double, TreeNode> children){
+        this.children = children;
+    }
 }

@@ -19,6 +19,7 @@ public class Main {
     public static ArrayList<normalizedData> data = new ArrayList<>();
     public static int splitIndex;
     public static int lastIndex;
+    public static int pruningIndex;
 
 
     public static void main(String[] args) {
@@ -125,18 +126,23 @@ public class Main {
 
         splitIndex = (data.size()) / 2;
         lastIndex = data.size();
+        pruningIndex = 9*(data.size()) / 10;
 
-        ArrayList<normalizedData> firstHalf = new ArrayList<>(data.subList(0, splitIndex));
-        ArrayList<normalizedData> secondHalf = new ArrayList<>(data.subList(splitIndex, lastIndex));
+        ArrayList<normalizedData> testData =  new ArrayList<>(data.subList(0, splitIndex));
+        ArrayList<normalizedData> trainingData = new ArrayList<>(data.subList(splitIndex, pruningIndex));
+        ArrayList<normalizedData> pruningData = new ArrayList<>(data.subList(pruningIndex, lastIndex));
 
-        ArrayList<normalizedData> trainingData = firstHalf;
-        ArrayList<normalizedData> testData = secondHalf;
+
+
 
 
         ArrayList<Integer> availableFeatures = new ArrayList<>();
         for (int i = 0; i < numAtributes; i++)
             availableFeatures.add(i);
+
+
         TreeNode root = buildTree(trainingData, availableFeatures);
+
         //printTree(root, "--");
 
         if (classification) {
@@ -149,8 +155,17 @@ public class Main {
 
 
         double percentPredictionsCorrect = testAcurracy(testData, root);
-        double normalPredictionsCorrect = testAcurracy(trainingData, root);
-        System.out.println("Accuracy: " + percentPredictionsCorrect + "%");
+        int nodeCount = countNodes(root);
+        System.out.println("Accuracy: " + percentPredictionsCorrect*100 + "%, Nodes: " + nodeCount);
+
+        pruneTree(root, pruningData);
+
+        percentPredictionsCorrect = testAcurracy(testData, root);
+        nodeCount = countNodes(root);
+        System.out.println("Pruned:");
+        System.out.println("Accuracy: " + percentPredictionsCorrect*100 + "%, Nodes: " + nodeCount);
+
+
         /*
         ArrayList<normalizedData> mytestdata = new ArrayList<>();
         mytestdata.add(new normalizedData(null, 1));
@@ -469,6 +484,59 @@ public class Main {
         }
     }
 
+    private static void pruneTree(TreeNode root, ArrayList<normalizedData> pruningData) {
+        pruneNode(root, pruningData, root);
+    }
+
+    private static void pruneNode(TreeNode node, ArrayList<normalizedData> pruningData, TreeNode root) {
+        if(node.isLeaf())
+            return;
+
+        // recurse into children first
+        // Go downward first
+        for(TreeNode child :
+                node.getChildren().values())
+        {
+            pruneNode(child,
+                    pruningData,
+                    root);
+        }
+        // try pruning this node
+
+        //old stuff saved
+        double originalAccuracy = testAcurracy(pruningData, root);
+        HashMap<Double, TreeNode> oldChildren = new HashMap<>(node.getChildren());
+        boolean oldIsLeaf = node.isLeaf();
+
+        //prune node
+        node.setLeaf(true);
+        node.clearChildren();
+
+        //find acurracy
+        double prunedAcurracy = testAcurracy(pruningData, root);
+
+
+        if(prunedAcurracy < originalAccuracy) {
+
+            node.setLeaf(oldIsLeaf);
+            node.setChildren(oldChildren);
+        }
+
+
+
+    }
+
+    private static int countNodes(TreeNode root){
+        if(root.isLeaf())
+            return 1;
+
+        int nodes = 1;
+
+        for(TreeNode child : root.getChildren().values()) {
+            nodes += countNodes(child);
+        }
+
+        return nodes;
     private static double meanTarget(ArrayList<normalizedData> inputData) {
         if (inputData.isEmpty()) return 0.0;
         double sum = 0;
