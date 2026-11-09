@@ -122,9 +122,9 @@ public class Car implements normalizedFeatures {
   public double getLable() {
     switch (condition) {
       case "unnac": return 0.0;
-      case "acc": return 0.33;
-      case "good": return 0.66;
-      default: return 1.0;
+      case "acc": return 1.0;
+      case "good": return 2.0;
+      default: return 3.0;
     }
   }
 
