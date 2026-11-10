@@ -130,9 +130,117 @@ public class Main {
         ArrayList<normalizedData> testData = new ArrayList<>(data.subList(0, splitIndex));
         ArrayList<normalizedData> trainingData = new ArrayList<>(data.subList(splitIndex, lastIndex));
 
-        //TESTING CODE
-        LogisticRegression model = new LogisticRegression(numAtributes, numClasses, .01, 100);
-        model.train(trainingData, testData);
+        //TESTING CODE LOGISTIC
+        //LogisticRegression logModel = new LogisticRegression(numAtributes, numClasses, .01, 100);
+        //logModel.train(trainingData, testData);
+
+        //TETSING CODE LINEAR
+        ArrayList<normalizedData> trainingDataTest =
+                new ArrayList<>();
+
+        // All examples follow:
+        // target = 2*x1 + 3*x2 + 1
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{1.0, 1.0},
+                        6.0
+                )
+        );
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{2.0, 1.0},
+                        8.0
+                )
+        );
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{1.0, 2.0},
+                        9.0
+                )
+        );
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{2.0, 2.0},
+                        11.0
+                )
+        );
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{3.0, 1.0},
+                        10.0
+                )
+        );
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{1.0, 3.0},
+                        12.0
+                )
+        );
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{3.0, 3.0},
+                        16.0
+                )
+        );
+
+        trainingDataTest.add(
+                new normalizedData(
+                        new double[]{4.0, 2.0},
+                        15.0
+                )
+        );
+
+        LinearRegression model =
+                new LinearRegression(2, 0.001, 500);
+
+        double[] testFeatures = {3.0, 2.0};
+        double expectedValue = 13.0;
+
+        System.out.println("Before training:");
+
+        double predictionBefore =
+                model.predict(testFeatures);
+
+        System.out.println(
+                "Prediction: " + predictionBefore
+        );
+
+        System.out.println(
+                "Expected: " + expectedValue
+        );
+
+        model.train(trainingDataTest);
+
+        System.out.println();
+        System.out.println("After training:");
+
+        double predictionAfter =
+                model.predict(testFeatures);
+
+        double loss =
+                model.computeLoss(
+                        predictionAfter,
+                        expectedValue
+                );
+
+        System.out.println(
+                "Prediction: " + predictionAfter
+        );
+
+        System.out.println(
+                "Expected: " + expectedValue
+        );
+
+        System.out.println(
+                "Squared error: " + loss
+        );
 
     }
 }
