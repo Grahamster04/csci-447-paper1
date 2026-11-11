@@ -3,7 +3,7 @@ import java.util.*;
 public class Main {
     // CHANGEABLE ATTRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/car.data";
+    public static final String FILE_NAME = "data/forestfires.data";
     //-------------------------------------
 
     public static final String abalone = "data/abalone.data";
@@ -242,5 +242,54 @@ public class Main {
                 "Squared error: " + loss
         );
 
+        // TESTING CODE FEEDFORWARD NETWORK
+
+        System.out.println("\n---------------------\n\n" + "TESTING FEEDFORWARD NETWORK\n");
+        ArrayList<normalizedData> networkTrainingData = new ArrayList<>();
+        ArrayList<normalizedData> networkTestData = new ArrayList<>();
+
+        for (normalizedData point : trainingData) {
+            double target = point.getTarget();
+
+            networkTrainingData.add(
+                    new normalizedData(point.getFeatures(), target)
+            );
+        }
+
+        for (normalizedData point : testData) {
+            double target = point.getTarget();
+            if (FILE_NAME.equals(breastCancer)) {
+                target = (target == 2.0) ? 0.0 : 1.0;
+            }
+            networkTestData.add(
+                    new normalizedData(point.getFeatures(), target)
+            );
+        }
+
+        if (classification && numClasses == 0) {
+            numClasses = 2;
+        }
+
+        int numOutputs = classification ? numClasses : 1;
+
+        FeedforwardNetwork feedforwardModel =
+                new FeedforwardNetwork(
+                        trainingData.get(0).getFeatures().length, 12, 8, numOutputs,0.01, 500, classification
+                );
+
+        feedforwardModel.train(networkTrainingData);
+
+        if (classification) {
+            System.out.println("\nFEEDFORWARD CLASSIFICATION RESULTS:");
+            double accuracy =
+                    feedforwardModel.testAccuracy(networkTestData);
+            System.out.println("Accuracy: " + accuracy + "%");
+
+        } else {
+            System.out.println("\nFEEDFORWARD REGRESSION RESULTS:");
+            double mse =
+                    feedforwardModel.testMSE(networkTestData);
+            System.out.println("Mean Squared Error: " + mse);
+        }
     }
 }
