@@ -27,7 +27,8 @@ public class FeedforwardNetwork {
             int numOutputs,
             double lr,
             int e,
-            boolean isClassification) {
+            boolean isClassification,
+            boolean useSecondLayer) {
 
         weights1 = new double[hidden1][numFeatures];
         weights2 = new double[hidden2][hidden1];
