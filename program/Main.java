@@ -3,7 +3,7 @@ import java.util.*;
 public class Main {
     // CHANGEABLE ATTRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/forestfires.data";
+    public static final String FILE_NAME = "data/machine.data";
     //-------------------------------------
 
     public static final String abalone = "data/abalone.data";
@@ -15,7 +15,7 @@ public class Main {
 
     public static boolean classification;
     public static int numAtributes;
-    public static int numClasses;
+    public static int numClasses = 1; //start at 1 for regression, change for clasification
 
     public static ArrayList<normalizedData> data = new ArrayList<>();
     public static int splitIndex;
@@ -28,6 +28,7 @@ public class Main {
             System.out.println("FILE ABALONE");
             classification = false;
             numAtributes = 8;
+            //numClasses = 27 ish? 27 max;
             boolean[] abaloneNumericAttributes = new boolean[]{false, true, true, true, true, true, true, true, true}; //[cite: 1]
             Abalone.collectData();
             for (int i = 0; i < Abalone.data.size(); i++) {
@@ -135,112 +136,31 @@ public class Main {
         //logModel.train(trainingData, testData);
 
         //TETSING CODE LINEAR
-        ArrayList<normalizedData> trainingDataTest =
-                new ArrayList<>();
+        //LinearRegression linModel = new LinearRegression(numAtributes, .001, 500);
+        //linModel.train(trainingData);
+        //System.out.println("Test Data average MSE: " + linModel.testMSE(testData));
 
-        // All examples follow:
-        // target = 2*x1 + 3*x2 + 1
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{1.0, 1.0},
-                        6.0
-                )
-        );
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{2.0, 1.0},
-                        8.0
-                )
-        );
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{1.0, 2.0},
-                        9.0
-                )
-        );
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{2.0, 2.0},
-                        11.0
-                )
-        );
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{3.0, 1.0},
-                        10.0
-                )
-        );
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{1.0, 3.0},
-                        12.0
-                )
-        );
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{3.0, 3.0},
-                        16.0
-                )
-        );
-
-        trainingDataTest.add(
-                new normalizedData(
-                        new double[]{4.0, 2.0},
-                        15.0
-                )
-        );
-
-        LinearRegression model =
-                new LinearRegression(2, 0.001, 500);
-
-        double[] testFeatures = {3.0, 2.0};
-        double expectedValue = 13.0;
-
-        System.out.println("Before training:");
-
-        double predictionBefore =
-                model.predict(testFeatures);
-
+        //TESTING CODE FEEDFORWARD
+        /*
         System.out.println(
-                "Prediction: " + predictionBefore
+                "Example features: "
+                        + Arrays.toString(
+                        trainingData.get(0).getFeatures()
+                )
         );
 
         System.out.println(
-                "Expected: " + expectedValue
+                "Example target: "
+                        + trainingData.get(0).getTarget()
         );
-
-        model.train(trainingDataTest);
-
-        System.out.println();
-        System.out.println("After training:");
-
-        double predictionAfter =
-                model.predict(testFeatures);
-
-        double loss =
-                model.computeLoss(
-                        predictionAfter,
-                        expectedValue
-                );
-
-        System.out.println(
-                "Prediction: " + predictionAfter
-        );
-
-        System.out.println(
-                "Expected: " + expectedValue
-        );
-
-        System.out.println(
-                "Squared error: " + loss
-        );
+        FeedforwardNetwork network = new FeedforwardNetwork(numAtributes,8,4,numClasses,0.01,500,classification);    // Classification mode
+        network.train(trainingData);
+        if (classification) {
+            System.out.println("Average accuracy:"+network.testAccuracy(testData));
+        }
+        else {
+            System.out.println("Average MSE:"+network.testMSE(testData));
+        }
 
         // TESTING CODE FEEDFORWARD NETWORK
 
@@ -291,5 +211,14 @@ public class Main {
                     feedforwardModel.testMSE(networkTestData);
             System.out.println("Mean Squared Error: " + mse);
         }
+
+         */
+
+        //AUTOENCODER TEST
+        Autoencoder autoencoder = new Autoencoder(numAtributes,3,.01,500);
+        autoencoder.train(trainingData);
+
+        System.out.println("Training reconstruction MSE: " + autoencoder.testReconstructionMSE(trainingData));
+        System.out.println("Test reconstruction MSE: " + autoencoder.testReconstructionMSE(testData));
     }
 }

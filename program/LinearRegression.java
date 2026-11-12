@@ -71,4 +71,17 @@ public class LinearRegression {
         }
     }
 
+    public double testMSE(ArrayList<normalizedData> testData) {
+
+        double totalMSE = 0;
+        for (normalizedData point : testData){
+
+            double prediction = predict(point.getFeatures());
+            double error = (prediction-point.getTarget());
+            totalMSE += error*error;
+        }
+        return totalMSE/testData.size();
+    }
+
+
 }
