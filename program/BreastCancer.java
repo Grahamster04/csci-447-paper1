@@ -118,7 +118,10 @@ public class BreastCancer implements normalizedFeatures {
 
   @Override
   public double getLable() {
-    return classes;
+    if (classes == 2)
+      return 0;
+    else
+      return 1;
   }
 
   public static void classify () {

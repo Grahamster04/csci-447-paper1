@@ -3,19 +3,23 @@ import java.util.*;
 public class Main {
     // CHANGEABLE ATTRIBUTES Depending
     //-------------------------------------
-    public static final String FILE_NAME = "data/machine.data";
+    public static final String FILE_NAME = "data/forestfires.data";
     //-------------------------------------
 
-    public static final String abalone = "data/abalone.data";
+
     public static final String breastCancer = "data/breast-cancer-wisconsin.data";
     public static final String car = "data/car.data";
-    public static final String fires = "data/forestfires.data";
     public static final String houseVotes = "data/house-votes-84.data";
+
+    public static final String abalone = "data/abalone.data";
     public static final String machine = "data/machine.data";
+    public static final String fires = "data/forestfires.data";
 
     public static boolean classification;
     public static int numAtributes;
     public static int numClasses = 1; //start at 1 for regression, change for clasification
+    public static double lr = 0.01;
+    public static int epocks = 200;
 
     public static ArrayList<normalizedData> data = new ArrayList<>();
     public static int splitIndex;
@@ -28,7 +32,6 @@ public class Main {
             System.out.println("FILE ABALONE");
             classification = false;
             numAtributes = 8;
-            //numClasses = 27 ish? 27 max;
             boolean[] abaloneNumericAttributes = new boolean[]{false, true, true, true, true, true, true, true, true}; //[cite: 1]
             Abalone.collectData();
             for (int i = 0; i < Abalone.data.size(); i++) {
@@ -42,7 +45,8 @@ public class Main {
         if (FILE_NAME.equals(breastCancer)) {
             System.out.println("FILE BREAST CANCER");
             classification = true;
-            numAtributes = 9;
+            numAtributes = 10;
+            numClasses = 2;
             boolean[] breastCancerNumericAtributes = new boolean[]{true, true, true, true, true, true, true, true, true, true, true};
             BreastCancer.collectData();
 
@@ -91,6 +95,7 @@ public class Main {
             System.out.println("FILE HOUSE VOTES");
             classification = true;
             numAtributes = 16;
+            numClasses = 2;
             HouseVotes.collectData();
             boolean[] breastCancerNumericAtributes = new boolean[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
@@ -120,105 +125,143 @@ public class Main {
         }
 
 
+        System.out.println(
+                "Configured attributes: " + numAtributes
+        );
+
+        System.out.println(
+                "Actual feature count: "
+                        + data.get(0).getFeatures().length
+        );
+
+        System.out.println(
+                "First feature vector: "
+                        + Arrays.toString(
+                        data.get(0).getFeatures()
+                )
+        );
+
         //FOR ALL OF THE FILES
 
-        //RANDOMIZE DATA SET
-        Collections.shuffle(data);
+
 
         splitIndex = (data.size()) / 2;
         lastIndex = data.size();
 
+        //RANDOMIZE DATA SET
+        Collections.shuffle(data);
         ArrayList<normalizedData> testData = new ArrayList<>(data.subList(0, splitIndex));
         ArrayList<normalizedData> trainingData = new ArrayList<>(data.subList(splitIndex, lastIndex));
 
-        //TESTING CODE LOGISTIC
-        //LogisticRegression logModel = new LogisticRegression(numAtributes, numClasses, .01, 100);
-        //logModel.train(trainingData, testData);
 
-        //TETSING CODE LINEAR
-        //LinearRegression linModel = new LinearRegression(numAtributes, .001, 500);
-        //linModel.train(trainingData);
-        //System.out.println("Test Data average MSE: " + linModel.testMSE(testData));
+        double[] firsts = new double[5];
+        double[] seconds = new double[5];
 
-        //TESTING CODE FEEDFORWARD
-        /*
-        System.out.println(
-                "Example features: "
-                        + Arrays.toString(
-                        trainingData.get(0).getFeatures()
-                )
-        );
+        if (classification)
+            runLogistic5x2(trainingData,testData);
+        else
+            runRegression5x2(trainingData,testData);
 
-        System.out.println(
-                "Example target: "
-                        + trainingData.get(0).getTarget()
-        );
-        FeedforwardNetwork network = new FeedforwardNetwork(numAtributes,8,4,numClasses,0.01,500,classification);    // Classification mode
-        network.train(trainingData);
-        if (classification) {
-            System.out.println("Average accuracy:"+network.testAccuracy(testData));
+
+
+
+
+    }
+
+    private static void runLogistic5x2(ArrayList<normalizedData> trainingData, ArrayList<normalizedData> testData){
+        double[] firsts = new double[5];
+        double[] seconds = new double[5];
+        double[] learningRates = {
+                0.1,
+                0.01,
+                0.001
+        };
+
+        int[] epochValues = {
+                50,
+                100,
+                250,
+                500
+        };
+
+        for (double learningRate : learningRates) {
+            for (int epochs : epochValues) {
+
+                System.out.println();
+                System.out.println("Learning Rate: " + learningRate + ", Epochs: " + epochs);
+
+                for (int i = 0; i<5; i++) {
+
+                    Collections.shuffle(data);
+                    testData = new ArrayList<>(data.subList(0, splitIndex));
+                    trainingData = new ArrayList<>(data.subList(splitIndex, lastIndex));
+
+                    double result = runLinear(trainingData, testData, classification, learningRate, epochs);
+                    firsts[i] = result;
+                    result = runLinear(testData, trainingData, classification, learningRate, epochs);
+                    seconds[i] = result;
+                }
+                System.out.println(Arrays.toString(firsts));
+                System.out.println(Arrays.toString(seconds));
+            }
+        }
+    }
+
+    private static void runRegression5x2(ArrayList<normalizedData> trainingData, ArrayList<normalizedData> testData){
+        double[] firsts = new double[5];
+        double[] seconds = new double[5];
+        double[] learningRates = {
+                0.01,
+                0.001,
+                0.0001
+        };
+
+        int[] epochValues = {
+                100,
+                250,
+                500,
+                1000
+        };
+
+        for (double learningRate : learningRates) {
+            for (int epochs : epochValues) {
+
+                System.out.println();
+                System.out.println("Learning Rate: " + learningRate + ", Epochs: " + epochs);
+
+                for (int i = 0; i<5; i++) {
+
+                    Collections.shuffle(data);
+                    testData = new ArrayList<>(data.subList(0, splitIndex));
+                    trainingData = new ArrayList<>(data.subList(splitIndex, lastIndex));
+
+                    double result = runLinear(trainingData, testData, classification, learningRate, epochs);
+                    firsts[i] = result;
+                    result = runLinear(testData, trainingData, classification, learningRate, epochs);
+                    seconds[i] = result;
+                }
+                System.out.println(Arrays.toString(firsts));
+                System.out.println(Arrays.toString(seconds));
+            }
+        }
+    }
+
+
+    private static double runLinear(ArrayList<normalizedData> trainingData, ArrayList<normalizedData> testData, boolean classification, double lr, int epocks) {
+        if (classification){
+
+            LogisticRegression logReg = new LogisticRegression(numAtributes, numClasses, lr, epocks);
+            logReg.train(trainingData);
+            double accuracy =logReg.testAccuracy(testData);
+            System.out.println("Logistic Regression Test Accuracy: " + accuracy + "%");
+            return accuracy;
         }
         else {
-            System.out.println("Average MSE:"+network.testMSE(testData));
+            LinearRegression linReg = new LinearRegression(numAtributes, lr, epocks);
+            linReg.train(trainingData);
+            double mse = linReg.testMSE(testData);
+            System.out.println("Linear Regression Test MSE: " + mse);
+            return mse;
         }
-
-        // TESTING CODE FEEDFORWARD NETWORK
-
-        System.out.println("\n---------------------\n\n" + "TESTING FEEDFORWARD NETWORK\n");
-        ArrayList<normalizedData> networkTrainingData = new ArrayList<>();
-        ArrayList<normalizedData> networkTestData = new ArrayList<>();
-
-        for (normalizedData point : trainingData) {
-            double target = point.getTarget();
-
-            networkTrainingData.add(
-                    new normalizedData(point.getFeatures(), target)
-            );
-        }
-
-        for (normalizedData point : testData) {
-            double target = point.getTarget();
-            if (FILE_NAME.equals(breastCancer)) {
-                target = (target == 2.0) ? 0.0 : 1.0;
-            }
-            networkTestData.add(
-                    new normalizedData(point.getFeatures(), target)
-            );
-        }
-
-        if (classification && numClasses == 0) {
-            numClasses = 2;
-        }
-
-        int numOutputs = classification ? numClasses : 1;
-
-        FeedforwardNetwork feedforwardModel =
-                new FeedforwardNetwork(
-                        trainingData.get(0).getFeatures().length, 12, 8, numOutputs,0.01, 500, classification
-                );
-
-        feedforwardModel.train(networkTrainingData);
-
-        if (classification) {
-            System.out.println("\nFEEDFORWARD CLASSIFICATION RESULTS:");
-            double accuracy =
-                    feedforwardModel.testAccuracy(networkTestData);
-            System.out.println("Accuracy: " + accuracy + "%");
-
-        } else {
-            System.out.println("\nFEEDFORWARD REGRESSION RESULTS:");
-            double mse =
-                    feedforwardModel.testMSE(networkTestData);
-            System.out.println("Mean Squared Error: " + mse);
-        }
-
-         */
-
-        //AUTOENCODER TEST
-        Autoencoder autoencoder = new Autoencoder(numAtributes,3,.01,500);
-        autoencoder.train(trainingData);
-
-        System.out.println("Training reconstruction MSE: " + autoencoder.testReconstructionMSE(trainingData));
-        System.out.println("Test reconstruction MSE: " + autoencoder.testReconstructionMSE(testData));
     }
 }

@@ -7,6 +7,7 @@ public class LinearRegression {
     private double biase;
     private double learningRate;
     private int epocks;
+    private boolean printit = false;
 
     public LinearRegression(int numFeatures, double lr, int e) {
 
@@ -66,7 +67,8 @@ public class LinearRegression {
             }
             double averageLoss = totalLoss/trainingData.size();
             //Print Statements
-            System.out.println("Epock: " + epock + ", Average Loss: " + averageLoss);
+            if (printit)
+                System.out.println("Epock: " + epock + ", Average Loss: " + averageLoss);
 
         }
     }

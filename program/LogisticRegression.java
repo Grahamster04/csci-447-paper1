@@ -1,12 +1,14 @@
 import java.util.ArrayList;
 import java.util.Random;
 
+
 public class LogisticRegression {
 
     private double[][] weights;
     private double[] biases;
     private double learningRate;
     private int epocks;
+    private static boolean printit = false;
 
 
     public LogisticRegression(int numFeatures, int numClasses, double lr, int e) {
@@ -142,7 +144,7 @@ public class LogisticRegression {
         System.out.println();
     }
 
-    public void train(ArrayList<normalizedData> trainingData, ArrayList<normalizedData> testData){
+    public void train(ArrayList<normalizedData> trainingData){
         for(int epock = 0; epock<epocks; epock++){
             double totalLoss = 0;
             for (normalizedData point : trainingData){
@@ -154,8 +156,8 @@ public class LogisticRegression {
                 totalLoss += loss;
             }
             double averageLoss = totalLoss/trainingData.size();
-            System.out.println("Epock: " + epock + ", Average Loss: " + averageLoss);
-            System.out.println("Accuracy: " + testAccuracy(testData));
+            if (printit)
+                System.out.println("Epock: " + epock + ", Average Loss: " + averageLoss);
 
         }
     }
